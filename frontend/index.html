@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SurfaceWatch — External Attack-Surface Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Plus Jakarta Sans"', 'sans-serif'],
+            sans: ['"DM Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen">
+  <!-- Defensive-Use Mandate Banner -->
+  <div class="bg-slate-900 text-slate-100 text-xs px-6 py-2.5 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <span>
+        <strong>Authorized Defensive Use Only:</strong> SurfaceWatch performs passive discovery and non-intrusive checks strictly on domains you own or have written authorization to monitor.
+      </span>
+      <span class="font-mono text-slate-300">Passive CT + Safe Checks</span>
+    </div>
+  </div>
+
+  <!-- Top Navigation Bar (3-zone contract) -->
+  <header class="bg-white border-b border-slate-200 px-6 py-3.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-8">
+      <a href="/" class="font-display text-lg font-bold tracking-tight text-slate-900 whitespace-nowrap shrink-0">
+        SurfaceWatch
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+        <button type="button" onclick="switchTab('findings')" class="hover:text-slate-900 transition-colors whitespace-nowrap shrink-0">Findings</button>
+        <button type="button" onclick="switchTab('diff')" class="hover:text-slate-900 transition-colors whitespace-nowrap shrink-0">What Changed</button>
+        <button type="button" onclick="switchTab('history')" class="hover:text-slate-900 transition-colors whitespace-nowrap shrink-0">Scan History</button>
+        <button type="button" onclick="switchTab('audit')" class="hover:text-slate-900 transition-colors whitespace-nowrap shrink-0">Audit Log</button>
+      </nav>
+      <div class="flex items-center gap-3 shrink-0">
+        <button id="header-scan-btn" type="button" onclick="triggerActiveScan()" disabled
+          class="px-4 py-2 text-xs font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors whitespace-nowrap shrink-0">
+          Run Scan
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <!-- Left Sidebar: Domain List & Add Form -->
+    <aside class="lg:col-span-4 space-y-6">
+      <section class="bg-white border border-slate-200 rounded-xl p-5">
+        <h2 class="font-display text-sm font-bold text-slate-900 mb-3">Add Monitored Domain</h2>
+        <form id="add-domain-form" class="space-y-3">
+          <div>
+            <label for="domain-input" class="block text-xs font-medium text-slate-600 mb-1">Domain Name</label>
+            <input id="domain-input" type="text" required placeholder="acme-bakery.com"
+              class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 font-mono" />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="owner-input" class="block text-xs font-medium text-slate-600 mb-1">Owner / Team</label>
+              <input id="owner-input" type="text" value="local-owner"
+                class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" />
+            </div>
+            <div>
+              <label for="interval-input" class="block text-xs font-medium text-slate-600 mb-1">Rescan (Days)</label>
+              <input id="interval-input" type="number" min="1" max="90" value="7"
+                class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 font-mono tabular-nums" />
+            </div>
+          </div>
+          <button type="submit"
+            class="w-full py-2 px-4 bg-slate-900 text-white text-xs font-semibold rounded-lg hover:bg-slate-800 transition-colors">
+            Register Domain
+          </button>
+        </form>
+        <p id="add-domain-msg" class="mt-2 text-xs text-slate-600 hidden"></p>
+      </section>
+
+      <section class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div class="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between">
+          <h2 class="font-display text-sm font-bold text-slate-900">Your Domains</h2>
+          <span id="domain-count" class="text-xs font-mono tabular-nums text-slate-500">0</span>
+        </div>
+        <div id="domain-list" class="divide-y divide-slate-200">
+          <div class="p-5 text-xs text-slate-500">No domains added yet. Register a domain above to begin.</div>
+        </div>
+      </section>
+    </aside>
+
+    <!-- Main Content Viewport -->
+    <section class="lg:col-span-8 space-y-6">
+      <!-- Empty Selection State -->
+      <div id="empty-state" class="bg-white border border-slate-200 rounded-xl p-10 text-center">
+        <h1 class="font-display text-xl font-bold text-slate-900 mb-2">Monitor Your Public Attack Surface</h1>
+        <p class="text-sm text-slate-600 max-w-lg mx-auto">
+          Add a domain you own on the left, verify ownership via DNS TXT or signed attestation, and run passive discovery plus non-intrusive TLS, DNS/email, port, and HTTP checks.
+        </p>
+      </div>
+
+      <!-- Active Domain Panel -->
+      <div id="domain-workspace" class="hidden space-y-6">
+        <!-- Ownership Verification Gate -->
+        <div id="verification-gate" class="hidden bg-amber-50 border border-amber-300 rounded-xl p-5 space-y-4">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h2 class="font-display text-base font-bold text-slate-900">Ownership Verification Required</h2>
+              <p class="text-xs text-slate-700 mt-1">
+                Scanning is locked until you prove ownership of <strong id="gate-domain-name" class="font-mono"></strong>.
+              </p>
+            </div>
+            <span class="text-xs font-semibold text-amber-900">Status: Unverified</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-amber-200">
+            <div class="bg-white border border-amber-200 rounded-lg p-4 space-y-2">
+              <h3 class="text-xs font-bold text-slate-900">Option A: DNS TXT Record</h3>
+              <p class="text-xs text-slate-600">Add this TXT record to your DNS provider, then verify:</p>
+              <div class="text-xs font-mono bg-slate-50 border border-slate-200 rounded p-2 break-all">
+                <div><span class="text-slate-500">Host:</span> <span id="txt-host"></span></div>
+                <div class="mt-1"><span class="text-slate-500">Value:</span> <span id="txt-value"></span></div>
+              </div>
+              <button type="button" onclick="verifyDns()"
+                class="w-full py-2 px-3 bg-slate-900 text-white text-xs font-semibold rounded-lg hover:bg-slate-800 transition-colors">
+                Check DNS TXT Record
+              </button>
+            </div>
+
+            <div class="bg-white border border-amber-200 rounded-lg p-4 space-y-3">
+              <h3 class="text-xs font-bold text-slate-900">Option B: Timestamped Authorization</h3>
+              <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                <input id="attest-checkbox" type="checkbox" class="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-600" />
+                <span>I own or am authorized to test this domain. (Stored with UTC timestamp in the audit log.)</span>
+              </label>
+              <button type="button" onclick="verifyAttestation()"
+                class="w-full py-2 px-3 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                Confirm Ownership &amp; Unlock
+              </button>
+            </div>
+          </div>
+          <p id="verify-status-msg" class="text-xs text-slate-700 hidden"></p>
+        </div>
+
+        <!-- Domain Summary Header -->
+        <div class="bg-white border border-slate-200 rounded-xl p-5">
+          <div class="flex flex-wrap items-start justify-between gap-4 pb-4 border-b border-slate-200">
+            <div>
+              <div class="flex items-center gap-3">
+                <h1 id="active-domain-title" class="font-display text-2xl font-bold text-slate-900 font-mono"></h1>
+                <span id="active-verified-label" class="text-xs font-semibold"></span>
+              </div>
+              <p id="active-domain-meta" class="text-xs text-slate-500 mt-1 font-mono tabular-nums"></p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" onclick="exportReport('html')"
+                class="px-3 py-2 text-xs font-medium border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
+                Export HTML
+              </button>
+              <button type="button" onclick="exportReport('pdf')"
+                class="px-3 py-2 text-xs font-medium border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
+                Export PDF
+              </button>
+              <button type="button" onclick="sendNotifications()"
+                class="px-3 py-2 text-xs font-medium border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
+                Send Summary
+              </button>
+              <button type="button" onclick="deleteActiveDomain()"
+                class="px-3 py-2 text-xs font-medium border border-red-200 text-red-700 rounded-lg hover:bg-red-50 transition-colors">
+                Remove
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Strip -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4">
+            <div>
+              <div class="text-xs text-slate-500">Risk Score</div>
+              <div id="kpi-risk" class="text-2xl font-bold font-mono tabular-nums text-slate-900 mt-0.5">0 / 100</div>
+            </div>
+            <div>
+              <div class="text-xs text-slate-500">Active Findings</div>
+              <div id="kpi-findings" class="text-2xl font-bold font-mono tabular-nums text-slate-900 mt-0.5">0</div>
+            </div>
+            <div>
+              <div class="text-xs text-slate-500">New Since Last</div>
+              <div id="kpi-new" class="text-2xl font-bold font-mono tabular-nums text-amber-700 mt-0.5">0</div>
+            </div>
+            <div>
+              <div class="text-xs text-slate-500">Resolved Issues</div>
+              <div id="kpi-resolved" class="text-2xl font-bold font-mono tabular-nums text-emerald-700 mt-0.5">0</div>
+            </div>
+          </div>
+
+          <!-- Schedule Bar -->
+          <div class="mt-4 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-4">
+              <label class="flex items-center gap-2 font-medium text-slate-700 cursor-pointer">
+                <input id="schedule-enabled" type="checkbox" onchange="saveSchedule()" class="rounded border-slate-300 text-blue-600" />
+                <span>Automatic Rescan</span>
+              </label>
+              <div class="flex items-center gap-2">
+                <span class="text-slate-500">Every</span>
+                <input id="schedule-days" type="number" min="1" max="90" value="7" onchange="saveSchedule()"
+                  class="w-16 px-2 py-1 border border-slate-300 rounded font-mono tabular-nums text-xs" />
+                <span class="text-slate-500">days</span>
+              </div>
+            </div>
+            <span id="action-feedback" class="text-xs text-slate-600"></span>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex items-center gap-1 p-1 bg-slate-200/70 rounded-lg w-fit">
+          <button type="button" data-tab="findings" onclick="switchTab('findings')" class="tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-md bg-white text-slate-900 shadow-sm">Findings</button>
+          <button type="button" data-tab="diff" onclick="switchTab('diff')" class="tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900">What Changed</button>
+          <button type="button" data-tab="history" onclick="switchTab('history')" class="tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900">Scan History</button>
+          <button type="button" data-tab="audit" onclick="switchTab('audit')" class="tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900">Audit Log</button>
+        </div>
+
+        <!-- Tab 1: Findings -->
+        <div id="tab-findings" class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+          <div class="p-4 border-b border-slate-200 flex flex-wrap items-center gap-3">
+            <input id="filter-search" type="text" placeholder="Filter by title, host, or evidence..." oninput="renderFindings()"
+              class="flex-1 min-w-[200px] px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" />
+            <select id="filter-severity" onchange="renderFindings()" class="px-3 py-1.5 text-xs border border-slate-300 rounded-lg bg-white">
+              <option value="">All Severities</option>
+              <option value="critical">Critical</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+              <option value="info">Info</option>
+            </select>
+            <select id="filter-scanner" onchange="renderFindings()" class="px-3 py-1.5 text-xs border border-slate-300 rounded-lg bg-white">
+              <option value="">All Scanners</option>
+              <option value="subdomain">Subdomains</option>
+              <option value="dns_email">DNS &amp; Email</option>
+              <option value="tls">TLS</option>
+              <option value="port_check">Ports</option>
+              <option value="http_exposure">HTTP</option>
+            </select>
+          </div>
+          <div id="findings-container" class="divide-y divide-slate-200"></div>
+        </div>
+
+        <!-- Tab 2: What Changed -->
+        <div id="tab-diff" class="hidden space-y-4"></div>
+
+        <!-- Tab 3: Scan History -->
+        <div id="tab-history" class="hidden bg-white border border-slate-200 rounded-xl overflow-hidden"></div>
+
+        <!-- Tab 4: Audit Log -->
+        <div id="tab-audit" class="hidden bg-white border border-slate-200 rounded-xl overflow-hidden"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const state = {
+      domains: [],
+      activeDomainId: null,
+      activeTab: 'findings',
+      findings: [],
+      diff: null,
+      scans: [],
+      auditLogs: [],
+      scanning: false,
+    };
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function formatDate(iso) {
+      if (!iso) return 'Never';
+      const d = new Date(iso);
+      return Number.isNaN(d.getTime()) ? String(iso) : d.toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
+    }
+
+    function severityStyle(sev) {
+      const map = {
+        critical: 'text-red-800 bg-red-50 border-red-200',
+        high: 'text-orange-800 bg-orange-50 border-orange-200',
+        medium: 'text-amber-800 bg-amber-50 border-amber-200',
+        low: 'text-sky-800 bg-sky-50 border-sky-200',
+        info: 'text-slate-700 bg-slate-100 border-slate-200',
+      };
+      return map[sev] || map.info;
+    }
+
+    async function apiFetch(url, options = {}) {
+      const res = await fetch(url, {
+        headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+        ...options,
+      });
+      if (!res.ok) {
+        let msg = `Request failed (${res.status})`;
+        try {
+          const data = await res.json();
+          msg = data.detail || msg;
+        } catch {}
+        throw new Error(msg);
+      }
+      if (res.status === 204) return null;
+      return res.json();
+    }
+
+    function setFeedback(text, isError = false) {
+      const el = document.getElementById('action-feedback');
+      el.textContent = text;
+      el.className = `text-xs ${isError ? 'text-red-700 font-medium' : 'text-slate-600'}`;
+    }
+
+    async function loadDomains(selectId = null) {
+      state.domains = await apiFetch('/api/domains');
+      document.getElementById('domain-count').textContent = String(state.domains.length);
+      if (selectId) {
+        state.activeDomainId = selectId;
+      } else if (!state.domains.some(d => d.id === state.activeDomainId)) {
+        state.activeDomainId = state.domains.length ? state.domains[0].id : null;
+      }
+      renderDomainList();
+      await loadActiveDomainData();
+    }
+
+    function renderDomainList() {
+      const container = document.getElementById('domain-list');
+      if (!state.domains.length) {
+        container.innerHTML = '<div class="p-5 text-xs text-slate-500">No domains added yet. Register a domain above to begin.</div>';
+        return;
+      }
+      container.innerHTML = state.domains.map(d => {
+        const active = d.id === state.activeDomainId;
+        const verLabel = d.verified ? 'Verified' : 'Unverified';
+        const verColor = d.verified ? 'text-emerald-700' : 'text-amber-700';
+        return `
+          <button type="button" onclick="selectDomain(${d.id})"
+            class="w-full text-left px-5 py-3.5 transition-colors ${active ? 'bg-blue-50/70' : 'hover:bg-slate-50'}">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-mono text-sm font-semibold text-slate-900 truncate">${escapeHtml(d.name)}</span>
+              <span class="font-mono tabular-nums text-xs font-bold text-slate-800">${d.latest_risk_score}/100</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-500 mt-1">
+              <span class="${verColor} font-medium">${verLabel}</span>
+              <span aria-hidden="true">&middot;</span>
+              <span class="font-mono tabular-nums">${d.scan_count} scan(s)</span>
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    async function selectDomain(id) {
+      state.activeDomainId = id;
+      renderDomainList();
+      await loadActiveDomainData();
+    }
+
+    async function loadActiveDomainData() {
+      const emptyEl = document.getElementById('empty-state');
+      const workEl = document.getElementById('domain-workspace');
+      const scanBtn = document.getElementById('header-scan-btn');
+
+      const domain = state.domains.find(d => d.id === state.activeDomainId);
+      if (!domain) {
+        emptyEl.classList.remove('hidden');
+        workEl.classList.add('hidden');
+        scanBtn.disabled = true;
+        return;
+      }
+
+      emptyEl.classList.add('hidden');
+      workEl.classList.remove('hidden');
+
+      const gateEl = document.getElementById('verification-gate');
+      if (!domain.verified) {
+        gateEl.classList.remove('hidden');
+        document.getElementById('gate-domain-name').textContent = domain.name;
+        document.getElementById('txt-host').textContent = domain.txt_record_host;
+        document.getElementById('txt-value').textContent = domain.txt_record_value;
+        scanBtn.disabled = true;
+      } else {
+        gateEl.classList.add('hidden');
+        scanBtn.disabled = state.scanning;
+      }
+
+      document.getElementById('active-domain-title').textContent = domain.name;
+      const verLabel = document.getElementById('active-verified-label');
+      verLabel.textContent = domain.verified
+        ? `Verified (${domain.verified_method === 'dns_txt' ? 'DNS TXT' : 'Attested'})`
+        : 'Unverified — Scanning Locked';
+      verLabel.className = `text-xs font-semibold ${domain.verified ? 'text-emerald-700' : 'text-amber-700'}`;
+
+      document.getElementById('active-domain-meta').textContent =
+        `Owner: ${domain.owner_label} · Last Scan: ${formatDate(domain.last_scan_at)}`;
+      document.getElementById('schedule-enabled').checked = domain.schedule_enabled;
+      document.getElementById('schedule-days').value = domain.scan_interval_days;
+
+      const [findings, diff, scans, auditLogs] = await Promise.all([
+        apiFetch(`/api/domains/${domain.id}/findings`),
+        apiFetch(`/api/domains/${domain.id}/diff`),
+        apiFetch(`/api/domains/${domain.id}/scans`),
+        apiFetch('/api/audit-logs?limit=50'),
+      ]);
+
+      state.findings = findings;
+      state.diff = diff;
+      state.scans = scans;
+      state.auditLogs = auditLogs;
+
+      document.getElementById('kpi-risk').textContent = `${domain.latest_risk_score} / 100`;
+      document.getElementById('kpi-findings').textContent = String(findings.length);
+      document.getElementById('kpi-new').textContent = String(diff.counts.new);
+      document.getElementById('kpi-resolved').textContent = String(diff.counts.resolved);
+
+      renderActiveTab();
+    }
+
+    function switchTab(tabName) {
+      state.activeTab = tabName;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        const isCurrent = btn.dataset.tab === tabName;
+        btn.className = isCurrent
+          ? 'tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-md bg-white text-slate-900 shadow-sm'
+          : 'tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900';
+      });
+      ['findings', 'diff', 'history', 'audit'].forEach(name => {
+        document.getElementById(`tab-${name}`).classList.toggle('hidden', name !== tabName);
+      });
+      renderActiveTab();
+    }
+
+    function renderActiveTab() {
+      if (state.activeTab === 'findings') renderFindings();
+      else if (state.activeTab === 'diff') renderDiff();
+      else if (state.activeTab === 'history') renderHistory();
+      else if (state.activeTab === 'audit') renderAudit();
+    }
+
+    function renderFindings() {
+      const container = document.getElementById('findings-container');
+      const query = document.getElementById('filter-search').value.trim().toLowerCase();
+      const sev = document.getElementById('filter-severity').value;
+      const scanner = document.getElementById('filter-scanner').value;
+
+      const filtered = state.findings.filter(f => {
+        if (sev && f.severity !== sev) return false;
+        if (scanner && f.scanner !== scanner) return false;
+        if (query) {
+          const hay = `${f.title} ${f.host} ${f.evidence} ${f.explanation}`.toLowerCase();
+          if (!hay.includes(query)) return false;
+        }
+        return true;
+      });
+
+      if (!filtered.length) {
+        container.innerHTML = '<div class="p-8 text-center text-xs text-slate-500">No findings match the current view. Run a scan after verifying ownership.</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(f => `
+        <details class="group p-4 hover:bg-slate-50/70 transition-colors">
+          <summary class="flex flex-wrap items-center justify-between gap-3 cursor-pointer list-none">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="px-2 py-0.5 text-[11px] font-mono font-semibold uppercase border rounded ${severityStyle(f.severity)}">
+                ${escapeHtml(f.severity)}
+              </span>
+              <span class="text-sm font-semibold text-slate-900">${escapeHtml(f.title)}</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-500 font-mono">
+              <span>${escapeHtml(f.host)}</span>
+              <span aria-hidden="true">&middot;</span>
+              <span>${escapeHtml(f.scanner)}</span>
+            </div>
+          </summary>
+          <div class="mt-3 pt-3 border-t border-slate-100 space-y-2 text-xs text-slate-700">
+            <p><strong>Why it matters:</strong> ${escapeHtml(f.explanation)}</p>
+            <p><strong>Evidence:</strong> <code class="font-mono bg-slate-100 px-1.5 py-0.5 rounded">${escapeHtml(f.evidence)}</code></p>
+            <p><strong>Remediation:</strong> ${escapeHtml(f.remediation)}</p>
+          </div>
+        </details>
+      `).join('');
+    }
+
+    function renderDiffGroup(label, items, toneClass) {
+      const body = items.length
+        ? items.map(f => `
+            <div class="px-4 py-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div>
+                <span class="font-mono font-semibold uppercase mr-2">${escapeHtml(f.severity)}</span>
+                <span class="font-semibold text-slate-900">${escapeHtml(f.title)}</span>
+              </div>
+              <span class="font-mono text-slate-500">${escapeHtml(f.host)}</span>
+            </div>
+          `).join('')
+        : '<div class="px-4 py-3 text-xs text-slate-500">None</div>';
+
+      return `
+        <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+          <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+            <h3 class="text-xs font-bold ${toneClass}">${label}</h3>
+            <span class="font-mono tabular-nums text-xs text-slate-500">${items.length}</span>
+          </div>
+          <div class="divide-y divide-slate-100">${body}</div>
+        </div>
+      `;
+    }
+
+    function renderDiff() {
+      const container = document.getElementById('tab-diff');
+      if (!state.diff || !state.diff.current_scan_id) {
+        container.innerHTML = '<div class="bg-white border border-slate-200 rounded-xl p-8 text-center text-xs text-slate-500">Run at least one scan to see changes over time.</div>';
+        return;
+      }
+      container.innerHTML = [
+        renderDiffGroup('New Findings Since Previous Scan', state.diff.new, 'text-amber-800'),
+        renderDiffGroup('Resolved Findings', state.diff.resolved, 'text-emerald-800'),
+        renderDiffGroup('Unchanged Findings', state.diff.unchanged, 'text-slate-700'),
+      ].join('');
+    }
+
+    function renderHistory() {
+      const container = document.getElementById('tab-history');
+      if (!state.scans.length) {
+        container.innerHTML = '<div class="p-8 text-center text-xs text-slate-500">No scans have been executed for this domain yet.</div>';
+        return;
+      }
+      container.innerHTML = `
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-50 border-b border-slate-200 text-slate-600">
+            <tr>
+              <th class="px-4 py-2.5 font-semibold">Scan</th>
+              <th class="px-4 py-2.5 font-semibold">Started</th>
+              <th class="px-4 py-2.5 font-semibold">Trigger</th>
+              <th class="px-4 py-2.5 font-semibold">Hosts</th>
+              <th class="px-4 py-2.5 font-semibold text-right">Risk Score</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            ${state.scans.map(s => `
+              <tr>
+                <td class="px-4 py-3 font-mono tabular-nums">#${s.id} (${escapeHtml(s.status)})</td>
+                <td class="px-4 py-3 font-mono tabular-nums text-slate-600">${formatDate(s.started_at)}</td>
+                <td class="px-4 py-3">${escapeHtml(s.triggered_by)} · ${escapeHtml(s.actor)}</td>
+                <td class="px-4 py-3 font-mono tabular-nums">${s.discovered_hosts.length}</td>
+                <td class="px-4 py-3 font-mono tabular-nums font-bold text-right">${s.risk_score}/100</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderAudit() {
+      const container = document.getElementById('tab-audit');
+      if (!state.auditLogs.length) {
+        container.innerHTML = '<div class="p-8 text-center text-xs text-slate-500">No audit events recorded yet.</div>';
+        return;
+      }
+      container.innerHTML = `
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-50 border-b border-slate-200 text-slate-600">
+            <tr>
+              <th class="px-4 py-2.5 font-semibold">Timestamp</th>
+              <th class="px-4 py-2.5 font-semibold">Actor</th>
+              <th class="px-4 py-2.5 font-semibold">Action</th>
+              <th class="px-4 py-2.5 font-semibold">Domain</th>
+              <th class="px-4 py-2.5 font-semibold">Details</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            ${state.auditLogs.map(log => `
+              <tr>
+                <td class="px-4 py-2.5 font-mono tabular-nums text-slate-600 whitespace-nowrap">${formatDate(log.created_at)}</td>
+                <td class="px-4 py-2.5">${escapeHtml(log.actor)}</td>
+                <td class="px-4 py-2.5 font-mono">${escapeHtml(log.action)}</td>
+                <td class="px-4 py-2.5 font-mono">${escapeHtml(log.domain_name)}</td>
+                <td class="px-4 py-2.5 text-slate-600">${escapeHtml(log.details)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    document.getElementById('add-domain-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msgEl = document.getElementById('add-domain-msg');
+      msgEl.classList.add('hidden');
+      try {
+        const created = await apiFetch('/api/domains', {
+          method: 'POST',
+          body: JSON.stringify({
+            name: document.getElementById('domain-input').value,
+            owner_label: document.getElementById('owner-input').value || 'local-owner',
+            scan_interval_days: Number(document.getElementById('interval-input').value) || 7,
+          }),
+        });
+        document.getElementById('domain-input').value = '';
+        await loadDomains(created.id);
+      } catch (err) {
+        msgEl.textContent = err.message;
+        msgEl.className = 'mt-2 text-xs text-red-700';
+      }
+    });
+
+    async function verifyDns() {
+      const msgEl = document.getElementById('verify-status-msg');
+      msgEl.classList.remove('hidden');
+      try {
+        const res = await apiFetch(`/api/domains/${state.activeDomainId}/verify/dns`, { method: 'POST' });
+        msgEl.textContent = res.message;
+        msgEl.className = `text-xs ${res.verified ? 'text-emerald-700 font-semibold' : 'text-amber-800'}`;
+        await loadDomains(state.activeDomainId);
+      } catch (err) {
+        msgEl.textContent = err.message;
+        msgEl.className = 'text-xs text-red-700';
+      }
+    }
+
+    async function verifyAttestation() {
+      const msgEl = document.getElementById('verify-status-msg');
+      const confirmed = document.getElementById('attest-checkbox').checked;
+      msgEl.classList.remove('hidden');
+      try {
+        const res = await apiFetch(`/api/domains/${state.activeDomainId}/verify/attest`, {
+          method: 'POST',
+          body: JSON.stringify({ confirmed, actor: 'local-owner' }),
+        });
+        msgEl.textContent = res.message;
+        msgEl.className = 'text-xs text-emerald-700 font-semibold';
+        await loadDomains(state.activeDomainId);
+      } catch (err) {
+        msgEl.textContent = err.message;
+        msgEl.className = 'text-xs text-red-700';
+      }
+    }
+
+    async function triggerActiveScan() {
+      if (!state.activeDomainId || state.scanning) return;
+      state.scanning = true;
+      const btn = document.getElementById('header-scan-btn');
+      btn.disabled = true;
+      btn.textContent = 'Scanning...';
+      setFeedback('Running passive discovery and non-intrusive checks...');
+      try {
+        await apiFetch(`/api/domains/${state.activeDomainId}/scan`, {
+          method: 'POST',
+          body: JSON.stringify({ actor: 'local-owner' }),
+        });
+        setFeedback('Scan completed successfully.');
+        await loadDomains(state.activeDomainId);
+      } catch (err) {
+        setFeedback(err.message, true);
+      } finally {
+        state.scanning = false;
+        btn.textContent = 'Run Scan';
+        const active = state.domains.find(d => d.id === state.activeDomainId);
+        btn.disabled = !(active && active.verified);
+      }
+    }
+
+    async function saveSchedule() {
+      if (!state.activeDomainId) return;
+      try {
+        await apiFetch(`/api/domains/${state.activeDomainId}/schedule`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            schedule_enabled: document.getElementById('schedule-enabled').checked,
+            scan_interval_days: Number(document.getElementById('schedule-days').value) || 7,
+          }),
+        });
+        setFeedback('Schedule updated.');
+      } catch (err) {
+        setFeedback(err.message, true);
+      }
+    }
+
+    function exportReport(format) {
+      if (!state.activeDomainId) return;
+      window.location.href = `/api/domains/${state.activeDomainId}/report?format=${format}`;
+    }
+
+    async function sendNotifications() {
+      if (!state.activeDomainId) return;
+      try {
+        const res = await apiFetch(`/api/domains/${state.activeDomainId}/notify`, { method: 'POST' });
+        setFeedback(res.details.join(' | '));
+      } catch (err) {
+        setFeedback(err.message, true);
+      }
+    }
+
+    async function deleteActiveDomain() {
+      if (!state.activeDomainId) return;
+      try {
+        await apiFetch(`/api/domains/${state.activeDomainId}`, { method: 'DELETE' });
+        state.activeDomainId = null;
+        await loadDomains();
+      } catch (err) {
+        setFeedback(err.message, true);
+      }
+    }
+
+    loadDomains().catch(err => setFeedback(err.message, true));
+  </script>
+</body>
+</html>
