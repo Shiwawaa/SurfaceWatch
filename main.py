@@ -10,7 +10,9 @@ from config import get_settings
 from database import init_db
 from scheduler import start_scheduler, stop_scheduler
 
-FRONTEND_INDEX = Path(__file__).resolve().parent / "frontend" / "index.html"
+FRONTEND_DIR = Path(__file__).resolve().parent / "frontend"
+FRONTEND_INDEX = FRONTEND_DIR / "index.html"
+FRONTEND_LOGO = FRONTEND_DIR / "logo.jpg"
 
 
 @asynccontextmanager
@@ -37,6 +39,10 @@ def create_app() -> FastAPI:
     @app.get("/", include_in_schema=False)
     def serve_dashboard() -> FileResponse:
         return FileResponse(FRONTEND_INDEX)
+
+    @app.get("/logo.jpg", include_in_schema=False)
+    def serve_logo() -> FileResponse:
+        return FileResponse(FRONTEND_LOGO)
 
     return app
 

@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SurfaceWatch: External Attack-Surface Monitor</title>
+  <link rel="icon" type="image/jpeg" href="/logo.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" />
@@ -107,8 +108,9 @@
   <!-- Top Navigation Bar (3-zone contract) -->
   <header class="bg-ink border-b border-white/10 px-6 py-3.5" role="banner">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-8">
-      <a href="/" class="font-display text-lg font-bold tracking-tight text-white whitespace-nowrap shrink-0">
-        SurfaceWatch
+      <a href="/" class="inline-flex items-center gap-2.5 font-display text-lg font-bold tracking-tight text-white whitespace-nowrap shrink-0">
+        <img src="/logo.jpg" alt="SurfaceWatch logo" class="h-8 w-8 rounded-lg object-cover shrink-0" />
+        <span>SurfaceWatch</span>
       </a>
       <nav class="hidden md:flex items-center gap-1 text-sm font-medium" aria-label="Primary">
         <button type="button" data-tab="findings" onclick="switchTab('findings')" class="topnav-btn">
