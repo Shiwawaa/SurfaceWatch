@@ -3,19 +3,35 @@ Copyright (c) 2026 Shiwawaa. All Rights Reserved.
 
 Project: surfacewatch
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to view,
-read, and run the Software for personal, non-commercial evaluation purposes
-only.
+1. Mandatory Fork Requirement (Use & Contribution)
+Permission to use, run, modify, or contribute to this Software is strictly
+conditioned upon first creating a public fork of the official repository.
 
-You may NOT modify, alter, adapt, translate, create derivative works from,
-merge, publish, distribute, sublicense, sell, or otherwise exploit the
-Software, in whole or in part, without the prior express written permission of
-the copyright holder.
+- To USE or RUN the Software: You must first fork the repository before
+  cloning, deploying, or running the Software for any permitted purpose.
+- To CONTRIBUTE to the Software: All modifications, bug fixes, features, and
+  contributions must be developed in your own fork of the repository and
+  submitted back to the upstream repository via a Pull Request.
 
-Requests to modify the Software, or to use it for any purpose not expressly
-granted above, must be submitted to and approved in writing by the copyright
-holder before any such use.
+2. Permitted Use
+Subject to the Mandatory Fork Requirement in Section 1, permission is hereby
+granted, free of charge, to any person obtaining a copy of this Software and
+associated documentation files, to view, read, run, and modify the Software
+for personal, educational, or authorized defensive evaluation purposes,
+provided that the copyright notice and this permission notice appear in all
+copies and forks.
+
+3. Restrictions
+Except as expressly permitted above, you may NOT redistribute, publish,
+sublicense, sell, or commercially exploit the Software, in whole or in part,
+without the prior express written permission of the copyright holder.
+Requests for commercial licensing or exceptions must be submitted to and
+approved in writing by the copyright holder before any such use.
+
+4. Contributions
+By submitting a Pull Request or contribution from your fork to this
+repository, you agree that your contributions are licensed under the same
+terms as this License.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
