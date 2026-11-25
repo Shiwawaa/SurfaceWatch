@@ -457,6 +457,10 @@
                 class="btn inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium border border-line-strong text-slate-700 rounded-lg hover:bg-slate-50">
                 <span data-icon="file" data-icon-class="w-4 h-4"></span>DOCX
               </button>
+              <button type="button" onclick="deleteActiveEngagement()"
+                class="btn inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium border border-red-200 text-red-700 rounded-lg hover:bg-red-50">
+                <span data-icon="trash" data-icon-class="w-4 h-4"></span>Remove
+              </button>
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
@@ -1720,6 +1724,20 @@
       if (!state.activeEngagementId) return;
       window.open(`/api/engagements/${state.activeEngagementId}/report?format=${encodeURIComponent(format)}`, '_blank', 'noopener');
       toast(`Preparing ${format.toUpperCase()} report...`, 'info');
+    }
+
+    async function deleteActiveEngagement() {
+      if (!state.activeEngagementId) return;
+      try {
+        await apiFetch(`/api/engagements/${state.activeEngagementId}`, { method: 'DELETE' });
+        state.activeEngagementId = null;
+        state.scanResult = null;
+        state.manualFindings = [];
+        toast('Engagement removed.');
+        await loadEngagements();
+      } catch (err) {
+        toast(err.message, 'error');
+      }
     }
 
     document.getElementById('engagement-form').addEventListener('submit', submitEngagement);
