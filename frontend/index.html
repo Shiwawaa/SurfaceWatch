@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SurfaceWatch — External Attack-Surface Monitor</title>
+  <title>SurfaceWatch: External Attack-Surface Monitor</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" />
@@ -17,75 +17,171 @@
             sans: ['"DM Sans"', 'sans-serif'],
             mono: ['"JetBrains Mono"', 'monospace'],
           },
+          colors: {
+            ink: 'var(--ink)',
+            canvas: 'var(--canvas)',
+            surface: 'var(--surface)',
+            accent: { DEFAULT: 'var(--accent)', dark: 'var(--accent-dark)', soft: 'var(--accent-soft)' },
+            muted: 'var(--muted)',
+            faint: 'var(--faint)',
+            line: { DEFAULT: 'var(--line)', strong: 'var(--line-strong)' },
+          },
         },
       },
     };
   </script>
+  <style>
+    :root {
+      --ink: #0F1A2B;
+      --canvas: #F7F8FA;
+      --surface: #FFFFFF;
+      --accent: #0E7C66;
+      --accent-dark: #0A6452;
+      --accent-soft: #E7F3F0;
+      --muted: #5B6576;
+      --faint: #7B8494;
+      --line: #E3E7ED;
+      --line-strong: #C9D1DB;
+      --critical: #B42318;
+      --critical-soft: #FEF3F2;
+      --high: #B54708;
+      --high-soft: #FFFAEB;
+      --medium: #854D0E;
+      --medium-soft: #FEFCE8;
+      --low: #1D4ED8;
+      --low-soft: #EFF6FF;
+      --info: #475569;
+      --info-soft: #F8FAFC;
+      --shadow-card: 0 1px 2px rgba(15, 26, 43, .04);
+      --shadow-toast: 0 10px 30px rgba(15, 26, 43, .14);
+      --toast-top: 1rem;
+      color-scheme: light;
+    }
+    ::selection { background: #CFE9E2; }
+    body { background: var(--canvas); color: var(--ink); }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow-card); }
+    .btn { transition: background-color .16s ease, color .16s ease, border-color .16s ease, opacity .16s ease; }
+    .btn:active:not(:disabled) { opacity: .92; }
+    button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .topnav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; color: #C6CFDB; font-weight: 500; white-space: nowrap; transition: color .16s ease, background-color .16s ease; }
+    .topnav-btn:hover { color: #FFFFFF; background: rgba(255, 255, 255, .06); }
+    .topnav-btn.is-active { color: #FFFFFF; background: rgba(255, 255, 255, .10); box-shadow: inset 0 -2px 0 var(--accent); }
+    .tab-btn { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 6px; color: var(--muted); transition: background-color .16s ease, color .16s ease, box-shadow .16s ease; }
+    .tab-btn:hover { color: var(--ink); }
+    .tab-btn.is-active { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(15, 26, 43, .06); }
+    .tab-fade { animation: tab-fade .16s ease-out; }
+    @keyframes tab-fade { from { opacity: 0; } to { opacity: 1; } }
+    .sev { display: inline-flex; align-items: center; padding: 2px 8px; font-size: 11px; font-weight: 600; line-height: 1.5; border-radius: 9999px; border: 1px solid transparent; }
+    .sev-critical { background: var(--critical); border-color: var(--critical); color: #FFFFFF; }
+    .sev-high { background: var(--high); border-color: var(--high); color: #FFFFFF; }
+    .sev-medium { background: var(--medium-soft); border-color: #E6D9A8; color: var(--medium); }
+    .sev-low { background: var(--low-soft); border-color: #C7D7F5; color: var(--low); }
+    .sev-info { background: var(--info-soft); border-color: var(--line-strong); color: var(--info); }
+    .pill { display: inline-flex; align-items: center; padding: 2px 8px; font-size: 11px; font-weight: 600; line-height: 1.5; border-radius: 9999px; border: 1px solid transparent; }
+    .pill-active { background: var(--accent-soft); border-color: #BFE0D8; color: var(--accent-dark); }
+    .pill-completed { background: var(--low-soft); border-color: #C7D7F5; color: var(--low); }
+    .pill-hold { background: var(--medium-soft); border-color: #E6D9A8; color: var(--medium); }
+    .pill-muted { background: #F1F3F6; border-color: var(--line-strong); color: var(--muted); }
+    .pill-critical { background: var(--critical-soft); border-color: #F5C6C1; color: var(--critical); }
+    .spinner { display: inline-block; width: .9rem; height: .9rem; border-radius: 9999px; border: 2px solid currentColor; border-right-color: transparent; opacity: .85; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #toast-container { position: fixed; top: var(--toast-top); right: 16px; z-index: 100; display: flex; flex-direction: column; gap: 8px; width: min(22rem, calc(100vw - 32px)); pointer-events: none; }
+    .toast { pointer-events: auto; display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); box-shadow: var(--shadow-toast); font-size: 13px; color: var(--ink); animation: toast-in .18s ease-out; }
+    .toast.is-leaving { animation: toast-out .16s ease-in forwards; }
+    .toast--error { border-left-color: var(--critical); }
+    .toast--info { border-left-color: var(--info); }
+    .toast__body { flex: 1; min-width: 0; line-height: 1.4; word-break: break-word; }
+    .toast__close { flex-shrink: 0; color: var(--faint); padding: 2px; border-radius: 4px; transition: color .15s ease, background-color .15s ease; }
+    .toast__close:hover { color: var(--ink); background: #F1F3F6; }
+    @keyframes toast-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes toast-out { from { opacity: 1; } to { opacity: 0; transform: translateY(-6px); } }
+    .scroll-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+    .scroll-thin::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 9999px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen">
+<body class="bg-canvas text-ink font-sans antialiased min-h-screen">
+  <div id="toast-container" aria-live="polite" aria-atomic="false"></div>
+
   <!-- Defensive-Use Mandate Banner -->
-  <div class="bg-slate-900 text-slate-100 text-xs px-6 py-2.5 border-b border-slate-800">
+  <div class="bg-[#0B1420] text-[#AEB9C7] text-xs px-6 py-2.5 border-b border-white/10">
     <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
       <span>
-        <strong>Authorized Defensive Use Only:</strong> SurfaceWatch performs passive discovery and non-intrusive checks strictly on domains you own or have written authorization to monitor.
+        <strong class="font-semibold text-[#E6EBF2]">Authorized Defensive Use Only:</strong> SurfaceWatch performs passive discovery and non-intrusive checks strictly on domains you own or have written authorization to monitor.
       </span>
-      <span class="font-mono text-slate-300">Passive CT + Safe Checks</span>
+      <span class="text-[#8FA0B5]">Passive CT + Safe Checks</span>
     </div>
   </div>
 
   <!-- Top Navigation Bar (3-zone contract) -->
-  <header class="bg-white border-b border-slate-200 px-6 py-3.5">
+  <header class="bg-ink border-b border-white/10 px-6 py-3.5" role="banner">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-8">
-      <a href="/" class="font-display text-lg font-bold tracking-tight text-slate-900 whitespace-nowrap shrink-0">
+      <a href="/" class="font-display text-lg font-bold tracking-tight text-white whitespace-nowrap shrink-0">
         SurfaceWatch
       </a>
-      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
-        <button type="button" onclick="switchTab('findings')" class="hover:text-slate-900 transition-colors whitespace-nowrap shrink-0">Findings</button>
-        <button type="button" onclick="switchTab('diff')" class="hover:text-slate-900 transition-colors whitespace-nowrap shrink-0">What Changed</button>
-        <button type="button" onclick="switchTab('history')" class="hover:text-slate-900 transition-colors whitespace-nowrap shrink-0">Scan History</button>
-        <button type="button" onclick="switchTab('audit')" class="hover:text-slate-900 transition-colors whitespace-nowrap shrink-0">Audit Log</button>
+      <nav class="hidden md:flex items-center gap-1 text-sm font-medium" aria-label="Primary">
+        <button type="button" data-tab="findings" onclick="switchTab('findings')" class="topnav-btn">
+          <span data-icon="findings" data-icon-class="w-4 h-4"></span>Findings
+        </button>
+        <button type="button" data-tab="diff" onclick="switchTab('diff')" class="topnav-btn">
+          <span data-icon="diff" data-icon-class="w-4 h-4"></span>What Changed
+        </button>
+        <button type="button" data-tab="history" onclick="switchTab('history')" class="topnav-btn">
+          <span data-icon="history" data-icon-class="w-4 h-4"></span>Scan History
+        </button>
+        <button type="button" data-tab="audit" onclick="switchTab('audit')" class="topnav-btn">
+          <span data-icon="audit" data-icon-class="w-4 h-4"></span>Audit Log
+        </button>
+        <button type="button" data-tab="pentest" onclick="switchTab('pentest')" class="topnav-btn">
+          <span data-icon="pentest" data-icon-class="w-4 h-4"></span>Pentest Mode
+        </button>
       </nav>
       <div class="flex items-center gap-3 shrink-0">
         <button id="header-scan-btn" type="button" onclick="triggerActiveScan()" disabled
-          class="px-4 py-2 text-xs font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors whitespace-nowrap shrink-0">
-          Run Scan
+          class="btn px-4 py-2 text-xs font-semibold text-white bg-accent rounded-lg hover:bg-accent-dark disabled:bg-white/15 disabled:text-white/50 disabled:cursor-not-allowed whitespace-nowrap shrink-0">
+          <span class="inline-flex items-center gap-2">
+            <span data-icon="scan" data-icon-class="w-4 h-4"></span><span>Run Scan</span>
+          </span>
         </button>
       </div>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+  <main id="domain-main" class="max-w-7xl mx-auto px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
     <!-- Left Sidebar: Domain List & Add Form -->
     <aside class="lg:col-span-4 space-y-6">
-      <section class="bg-white border border-slate-200 rounded-xl p-5">
+      <section class="card bg-white border border-slate-200 rounded-xl p-5">
         <h2 class="font-display text-sm font-bold text-slate-900 mb-3">Add Monitored Domain</h2>
         <form id="add-domain-form" class="space-y-3">
           <div>
             <label for="domain-input" class="block text-xs font-medium text-slate-600 mb-1">Domain Name</label>
             <input id="domain-input" type="text" required placeholder="acme-bakery.com"
-              class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 font-mono" />
+              class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono" />
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label for="owner-input" class="block text-xs font-medium text-slate-600 mb-1">Owner / Team</label>
               <input id="owner-input" type="text" value="local-owner"
-                class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent" />
             </div>
             <div>
               <label for="interval-input" class="block text-xs font-medium text-slate-600 mb-1">Rescan (Days)</label>
               <input id="interval-input" type="number" min="1" max="90" value="7"
-                class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 font-mono tabular-nums" />
+                class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono tabular-nums" />
             </div>
           </div>
           <button type="submit"
-            class="w-full py-2 px-4 bg-slate-900 text-white text-xs font-semibold rounded-lg hover:bg-slate-800 transition-colors">
+            class="btn w-full py-2 px-4 bg-ink text-white text-xs font-semibold rounded-lg hover:opacity-90">
             Register Domain
           </button>
         </form>
         <p id="add-domain-msg" class="mt-2 text-xs text-slate-600 hidden"></p>
       </section>
 
-      <section class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <section class="card bg-white border border-slate-200 rounded-xl overflow-hidden">
         <div class="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between">
           <h2 class="font-display text-sm font-bold text-slate-900">Your Domains</h2>
           <span id="domain-count" class="text-xs font-mono tabular-nums text-slate-500">0</span>
@@ -99,7 +195,7 @@
     <!-- Main Content Viewport -->
     <section class="lg:col-span-8 space-y-6">
       <!-- Empty Selection State -->
-      <div id="empty-state" class="bg-white border border-slate-200 rounded-xl p-10 text-center">
+      <div id="empty-state" class="card bg-white border border-slate-200 rounded-xl p-10 text-center">
         <h1 class="font-display text-xl font-bold text-slate-900 mb-2">Monitor Your Public Attack Surface</h1>
         <p class="text-sm text-slate-600 max-w-lg mx-auto">
           Add a domain you own on the left, verify ownership via DNS TXT or signed attestation, and run passive discovery plus non-intrusive TLS, DNS/email, port, and HTTP checks.
@@ -129,7 +225,7 @@
                 <div class="mt-1"><span class="text-slate-500">Value:</span> <span id="txt-value"></span></div>
               </div>
               <button type="button" onclick="verifyDns()"
-                class="w-full py-2 px-3 bg-slate-900 text-white text-xs font-semibold rounded-lg hover:bg-slate-800 transition-colors">
+                class="btn w-full py-2 px-3 bg-ink text-white text-xs font-semibold rounded-lg hover:opacity-90">
                 Check DNS TXT Record
               </button>
             </div>
@@ -137,11 +233,11 @@
             <div class="bg-white border border-amber-200 rounded-lg p-4 space-y-3">
               <h3 class="text-xs font-bold text-slate-900">Option B: Timestamped Authorization</h3>
               <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
-                <input id="attest-checkbox" type="checkbox" class="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-600" />
+                <input id="attest-checkbox" type="checkbox" class="mt-0.5 rounded border-line-strong text-accent focus:ring-accent" />
                 <span>I own or am authorized to test this domain. (Stored with UTC timestamp in the audit log.)</span>
               </label>
               <button type="button" onclick="verifyAttestation()"
-                class="w-full py-2 px-3 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                class="btn w-full py-2 px-3 bg-accent text-white text-xs font-semibold rounded-lg hover:bg-accent-dark">
                 Confirm Ownership &amp; Unlock
               </button>
             </div>
@@ -150,7 +246,7 @@
         </div>
 
         <!-- Domain Summary Header -->
-        <div class="bg-white border border-slate-200 rounded-xl p-5">
+        <div class="card bg-white border border-slate-200 rounded-xl p-5">
           <div class="flex flex-wrap items-start justify-between gap-4 pb-4 border-b border-slate-200">
             <div>
               <div class="flex items-center gap-3">
@@ -161,20 +257,20 @@
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <button type="button" onclick="exportReport('html')"
-                class="px-3 py-2 text-xs font-medium border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
-                Export HTML
+                class="btn inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium border border-line-strong text-slate-700 rounded-lg hover:bg-slate-50">
+                <span data-icon="download" data-icon-class="w-4 h-4"></span>Export HTML
               </button>
               <button type="button" onclick="exportReport('pdf')"
-                class="px-3 py-2 text-xs font-medium border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
-                Export PDF
+                class="btn inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium border border-line-strong text-slate-700 rounded-lg hover:bg-slate-50">
+                <span data-icon="download" data-icon-class="w-4 h-4"></span>Export PDF
               </button>
               <button type="button" onclick="sendNotifications()"
-                class="px-3 py-2 text-xs font-medium border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
-                Send Summary
+                class="btn inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium border border-line-strong text-slate-700 rounded-lg hover:bg-slate-50">
+                <span data-icon="file" data-icon-class="w-4 h-4"></span>Send Summary
               </button>
               <button type="button" onclick="deleteActiveDomain()"
-                class="px-3 py-2 text-xs font-medium border border-red-200 text-red-700 rounded-lg hover:bg-red-50 transition-colors">
-                Remove
+                class="btn inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium border border-red-200 text-red-700 rounded-lg hover:bg-red-50">
+                <span data-icon="trash" data-icon-class="w-4 h-4"></span>Remove
               </button>
             </div>
           </div>
@@ -203,13 +299,13 @@
           <div class="mt-4 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
             <div class="flex items-center gap-4">
               <label class="flex items-center gap-2 font-medium text-slate-700 cursor-pointer">
-                <input id="schedule-enabled" type="checkbox" onchange="saveSchedule()" class="rounded border-slate-300 text-blue-600" />
+                <input id="schedule-enabled" type="checkbox" onchange="saveSchedule()" class="rounded border-line-strong text-accent" />
                 <span>Automatic Rescan</span>
               </label>
               <div class="flex items-center gap-2">
                 <span class="text-slate-500">Every</span>
                 <input id="schedule-days" type="number" min="1" max="90" value="7" onchange="saveSchedule()"
-                  class="w-16 px-2 py-1 border border-slate-300 rounded font-mono tabular-nums text-xs" />
+                  class="w-16 px-2 py-1 border border-line-strong rounded font-mono tabular-nums text-xs" />
                 <span class="text-slate-500">days</span>
               </div>
             </div>
@@ -218,19 +314,19 @@
         </div>
 
         <!-- Tabs -->
-        <div class="flex items-center gap-1 p-1 bg-slate-200/70 rounded-lg w-fit">
-          <button type="button" data-tab="findings" onclick="switchTab('findings')" class="tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-md bg-white text-slate-900 shadow-sm">Findings</button>
-          <button type="button" data-tab="diff" onclick="switchTab('diff')" class="tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900">What Changed</button>
-          <button type="button" data-tab="history" onclick="switchTab('history')" class="tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900">Scan History</button>
-          <button type="button" data-tab="audit" onclick="switchTab('audit')" class="tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900">Audit Log</button>
+        <div class="flex items-center gap-1 p-1 bg-[#EEF1F5] border border-line rounded-lg w-fit">
+          <button type="button" data-tab="findings" onclick="switchTab('findings')" class="tab-btn is-active">Findings</button>
+          <button type="button" data-tab="diff" onclick="switchTab('diff')" class="tab-btn">What Changed</button>
+          <button type="button" data-tab="history" onclick="switchTab('history')" class="tab-btn">Scan History</button>
+          <button type="button" data-tab="audit" onclick="switchTab('audit')" class="tab-btn">Audit Log</button>
         </div>
 
         <!-- Tab 1: Findings -->
-        <div id="tab-findings" class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div id="tab-findings" class="card bg-white border border-slate-200 rounded-xl overflow-hidden">
           <div class="p-4 border-b border-slate-200 flex flex-wrap items-center gap-3">
             <input id="filter-search" type="text" placeholder="Filter by title, host, or evidence..." oninput="renderFindings()"
-              class="flex-1 min-w-[200px] px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" />
-            <select id="filter-severity" onchange="renderFindings()" class="px-3 py-1.5 text-xs border border-slate-300 rounded-lg bg-white">
+              class="flex-1 min-w-[200px] px-3 py-1.5 text-xs border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent" />
+            <select id="filter-severity" onchange="renderFindings()" class="px-3 py-1.5 text-xs border border-line-strong rounded-lg bg-white">
               <option value="">All Severities</option>
               <option value="critical">Critical</option>
               <option value="high">High</option>
@@ -238,7 +334,7 @@
               <option value="low">Low</option>
               <option value="info">Info</option>
             </select>
-            <select id="filter-scanner" onchange="renderFindings()" class="px-3 py-1.5 text-xs border border-slate-300 rounded-lg bg-white">
+            <select id="filter-scanner" onchange="renderFindings()" class="px-3 py-1.5 text-xs border border-line-strong rounded-lg bg-white">
               <option value="">All Scanners</option>
               <option value="subdomain">Subdomains</option>
               <option value="dns_email">DNS &amp; Email</option>
@@ -254,15 +350,276 @@
         <div id="tab-diff" class="hidden space-y-4"></div>
 
         <!-- Tab 3: Scan History -->
-        <div id="tab-history" class="hidden bg-white border border-slate-200 rounded-xl overflow-hidden"></div>
+        <div id="tab-history" class="hidden card bg-white border border-slate-200 rounded-xl overflow-hidden"></div>
 
         <!-- Tab 4: Audit Log -->
-        <div id="tab-audit" class="hidden bg-white border border-slate-200 rounded-xl overflow-hidden"></div>
+        <div id="tab-audit" class="hidden card bg-white border border-slate-200 rounded-xl overflow-hidden"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Authorized Pentest Workspace -->
+  <main id="pentest-main" class="hidden max-w-7xl mx-auto px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <aside class="lg:col-span-4 space-y-6">
+      <section class="card p-5">
+        <div class="flex items-center gap-2 mb-3">
+          <span data-icon="shield" data-icon-class="w-4 h-4 text-accent"></span>
+          <h2 class="font-display text-sm font-bold text-slate-900">New Engagement</h2>
+        </div>
+        <form id="engagement-form" class="space-y-3">
+          <div>
+            <label for="eng-client" class="block text-xs font-medium text-slate-600 mb-1">Client Name</label>
+            <input id="eng-client" type="text" required placeholder="Acme Bakery"
+              class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent" />
+          </div>
+          <div>
+            <label for="eng-auth-ref" class="block text-xs font-medium text-slate-600 mb-1">Authorization Reference</label>
+            <input id="eng-auth-ref" type="text" required placeholder="SOW-2026-014 / signed ROE"
+              class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent" />
+          </div>
+          <div>
+            <label for="eng-scope" class="block text-xs font-medium text-slate-600 mb-1">Website URL(s) / Scope</label>
+            <textarea id="eng-scope" rows="3" required placeholder="https://acme-bakery.com"
+              class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono"></textarea>
+            <p class="text-[11px] text-slate-400 mt-1">Paste a website URL (e.g. https://acme-bakery.com) and the host is extracted automatically. Domains, wildcards, and CIDR networks still work. One per line.</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="eng-start-date" class="block text-xs font-medium text-slate-600 mb-1">Start</label>
+              <input id="eng-start-date" type="date" required
+                class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono" />
+            </div>
+            <div>
+              <label for="eng-end-date" class="block text-xs font-medium text-slate-600 mb-1">End</label>
+              <input id="eng-end-date" type="date" required
+                class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono" />
+            </div>
+          </div>
+          <div>
+            <label for="eng-tester" class="block text-xs font-medium text-slate-600 mb-1">Tester</label>
+            <input id="eng-tester" type="text" value="local-owner"
+              class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent" />
+          </div>
+          <div>
+            <label for="eng-notes" class="block text-xs font-medium text-slate-600 mb-1">Notes</label>
+            <textarea id="eng-notes" rows="2" placeholder="Rules of engagement, contacts, constraints..."
+              class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent"></textarea>
+          </div>
+          <button id="create-engagement-btn" type="submit"
+            class="btn w-full inline-flex items-center justify-center gap-2 py-2 px-4 bg-ink text-white text-xs font-semibold rounded-lg hover:opacity-90">
+            <span data-icon="plus" data-icon-class="w-4 h-4"></span>Create Engagement
+          </button>
+        </form>
+      </section>
+
+      <section class="card overflow-hidden">
+        <div class="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between">
+          <h2 class="font-display text-sm font-bold text-slate-900">Engagements</h2>
+          <span id="engagement-count" class="text-xs font-mono tabular-nums text-slate-500">0</span>
+        </div>
+        <div id="engagement-list" class="divide-y divide-slate-200 scroll-thin max-h-[32rem] overflow-y-auto">
+          <div class="p-5 text-xs text-slate-500">No engagements yet. Create one above to begin.</div>
+        </div>
+      </section>
+    </aside>
+
+    <section class="lg:col-span-8 space-y-6">
+      <div id="engagement-empty" class="card p-10 text-center">
+        <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-accent-dark">
+          <span data-icon="target" data-icon-class="w-6 h-6"></span>
+        </div>
+        <h1 class="font-display text-xl font-bold text-slate-900 mb-2">Authorized Pentest Workspace</h1>
+        <p class="text-sm text-slate-600 max-w-lg mx-auto">
+          Create or select an engagement to run scoped nmap/nuclei scans, record manual findings with screenshots, track retests, and export a VAPT report.
+        </p>
+      </div>
+
+      <div id="engagement-workspace" class="hidden space-y-6">
+        <div class="card p-5">
+          <div class="flex flex-wrap items-start justify-between gap-4 pb-4 border-b border-slate-200">
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-3">
+                <h1 id="eng-title" class="font-display text-2xl font-bold text-slate-900 truncate"></h1>
+                <span id="eng-status-badge"></span>
+              </div>
+              <p id="eng-meta" class="text-xs text-slate-500 mt-1 font-mono tabular-nums"></p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" onclick="exportVapt('html')"
+                class="btn inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium border border-line-strong text-slate-700 rounded-lg hover:bg-slate-50">
+                <span data-icon="file" data-icon-class="w-4 h-4"></span>HTML
+              </button>
+              <button type="button" onclick="exportVapt('pdf')"
+                class="btn inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium border border-line-strong text-slate-700 rounded-lg hover:bg-slate-50">
+                <span data-icon="download" data-icon-class="w-4 h-4"></span>PDF
+              </button>
+              <button type="button" onclick="exportVapt('docx')"
+                class="btn inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium border border-line-strong text-slate-700 rounded-lg hover:bg-slate-50">
+                <span data-icon="file" data-icon-class="w-4 h-4"></span>DOCX
+              </button>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+            <div>
+              <div class="text-xs text-slate-500">Findings</div>
+              <div id="eng-finding-count" class="text-2xl font-bold font-mono tabular-nums text-slate-900 mt-0.5">0</div>
+            </div>
+            <div>
+              <div class="text-xs text-slate-500">Risk Grade</div>
+              <div id="eng-risk-grade" class="text-2xl font-bold text-slate-900 mt-0.5">Low</div>
+            </div>
+            <div>
+              <div class="text-xs text-slate-500">Test Window</div>
+              <div id="eng-window" class="text-sm font-semibold font-mono tabular-nums text-slate-800 mt-1.5"></div>
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-2">
+              <label for="eng-status-select" class="text-xs font-medium text-slate-600">Engagement Status</label>
+              <select id="eng-status-select" class="px-3 py-1.5 text-xs border border-line-strong rounded-lg bg-white">
+                <option value="active">Active</option>
+                <option value="on_hold">On Hold</option>
+                <option value="completed">Completed</option>
+                <option value="archived">Archived</option>
+              </select>
+              <button type="button" onclick="updateEngagementStatus(this)"
+                class="btn px-3 py-1.5 text-xs font-semibold bg-accent text-white rounded-lg hover:bg-accent-dark">Update</button>
+            </div>
+            <span id="eng-created" class="text-[11px] text-slate-400 font-mono"></span>
+          </div>
+        </div>
+
+        <div class="card p-5">
+          <div class="flex items-center gap-2 mb-2">
+            <span data-icon="shield" data-icon-class="w-4 h-4 text-slate-500"></span>
+            <h2 class="font-display text-sm font-bold text-slate-900">Authorized Scope</h2>
+          </div>
+          <div id="eng-scope" class="flex flex-wrap gap-2"></div>
+          <p id="eng-notes" class="text-xs text-slate-600 mt-3"></p>
+        </div>
+
+        <div class="card p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span data-icon="scan" data-icon-class="w-4 h-4 text-accent"></span>
+              <h2 class="font-display text-sm font-bold text-slate-900">Active Scan</h2>
+            </div>
+            <span id="scan-window-warning" class="hidden"></span>
+          </div>
+          <form id="active-scan-form" class="grid grid-cols-1 md:grid-cols-12 gap-3 md:items-end">
+            <div class="md:col-span-6">
+              <label for="scan-target" class="block text-xs font-medium text-slate-600 mb-1">Target URL / host (must be in scope)</label>
+              <input id="scan-target" type="text" required placeholder="acme-bakery.com"
+                class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono" />
+            </div>
+            <div class="md:col-span-3">
+              <label for="scan-tool" class="block text-xs font-medium text-slate-600 mb-1">Tool</label>
+              <select id="scan-tool" class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg bg-white">
+                <option value="nmap">nmap</option>
+                <option value="nuclei">nuclei</option>
+              </select>
+            </div>
+            <div class="md:col-span-3">
+              <button id="engagement-scan-btn" type="submit"
+                class="btn w-full inline-flex items-center justify-center gap-2 py-2 px-4 bg-accent text-white text-xs font-semibold rounded-lg hover:bg-accent-dark disabled:bg-line-strong disabled:cursor-not-allowed">
+                <span data-icon="scan" data-icon-class="w-4 h-4"></span>Run Scoped Scan
+              </button>
+            </div>
+          </form>
+          <p class="text-[11px] text-slate-400">Scans run only while the engagement status is Active and today is within the authorized window. Out-of-scope targets are rejected by the API.</p>
+          <div id="scan-result" class="hidden"></div>
+        </div>
+
+        <div class="card overflow-hidden">
+          <div class="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span data-icon="findings" data-icon-class="w-4 h-4 text-slate-500"></span>
+              <h2 class="font-display text-sm font-bold text-slate-900">Manual Findings</h2>
+            </div>
+            <span id="manual-count" class="text-xs font-mono tabular-nums text-slate-500">0</span>
+          </div>
+          <details id="manual-finding-details" class="group border-b border-slate-200">
+            <summary class="list-none cursor-pointer px-5 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors">
+              <span class="inline-flex items-center gap-2 text-sm font-semibold text-slate-800">
+                <span data-icon="plus" data-icon-class="w-4 h-4 text-accent"></span>Add Manual Finding
+              </span>
+              <span class="text-xs text-slate-400 group-open:hidden">Expand</span>
+            </summary>
+            <form id="manual-finding-form" class="px-5 pb-5 pt-1 space-y-3">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="md:col-span-2">
+                  <label for="mf-title" class="block text-xs font-medium text-slate-600 mb-1">Title</label>
+                  <input id="mf-title" type="text" required placeholder="Reflected XSS in search parameter"
+                    class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent" />
+                </div>
+                <div>
+                  <label for="mf-host" class="block text-xs font-medium text-slate-600 mb-1">Affected Host</label>
+                  <input id="mf-host" type="text" required placeholder="shop.acme-bakery.com"
+                    class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono" />
+                </div>
+                <div>
+                  <label for="mf-severity" class="block text-xs font-medium text-slate-600 mb-1">Severity</label>
+                  <select id="mf-severity" class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg bg-white">
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="low">Low</option>
+                    <option value="info">Info</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="mf-cvss" class="block text-xs font-medium text-slate-600 mb-1">CVSS Score</label>
+                  <input id="mf-cvss" type="number" step="0.1" min="0" max="10" placeholder="7.5"
+                    class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono" />
+                </div>
+                <div>
+                  <label for="mf-owasp" class="block text-xs font-medium text-slate-600 mb-1">OWASP Category</label>
+                  <input id="mf-owasp" type="text" placeholder="A03:2021"
+                    class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent" />
+                </div>
+                <div class="md:col-span-2">
+                  <label for="mf-cvss-vector" class="block text-xs font-medium text-slate-600 mb-1">CVSS Vector</label>
+                  <input id="mf-cvss-vector" type="text" placeholder="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+                    class="w-full px-3 py-2 text-xs border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono" />
+                </div>
+                <div class="md:col-span-2">
+                  <label for="mf-description" class="block text-xs font-medium text-slate-600 mb-1">Description</label>
+                  <textarea id="mf-description" rows="2"
+                    class="w-full px-3 py-2 text-xs border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent"></textarea>
+                </div>
+                <div class="md:col-span-2">
+                  <label for="mf-evidence" class="block text-xs font-medium text-slate-600 mb-1">Evidence</label>
+                  <textarea id="mf-evidence" rows="2"
+                    class="w-full px-3 py-2 text-xs border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono"></textarea>
+                </div>
+                <div class="md:col-span-2">
+                  <label for="mf-remediation" class="block text-xs font-medium text-slate-600 mb-1">Remediation</label>
+                  <textarea id="mf-remediation" rows="2"
+                    class="w-full px-3 py-2 text-xs border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent"></textarea>
+                </div>
+                <div>
+                  <label for="mf-discovered-by" class="block text-xs font-medium text-slate-600 mb-1">Discovered By</label>
+                  <input id="mf-discovered-by" type="text" value="local-owner"
+                    class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent" />
+                </div>
+                <div class="flex items-end">
+                  <button id="save-manual-btn" type="submit"
+                    class="btn w-full inline-flex items-center justify-center gap-2 py-2 px-4 bg-ink text-white text-xs font-semibold rounded-lg hover:opacity-90">
+                    <span data-icon="plus" data-icon-class="w-4 h-4"></span>Save Manual Finding
+                  </button>
+                </div>
+              </div>
+            </form>
+          </details>
+          <div id="manual-findings-list" class="divide-y divide-slate-200"></div>
+        </div>
       </div>
     </section>
   </main>
 
   <script>
+    const DOMAIN_TABS = ['findings', 'diff', 'history', 'audit'];
+
     const state = {
       domains: [],
       activeDomainId: null,
@@ -272,6 +629,13 @@
       scans: [],
       auditLogs: [],
       scanning: false,
+      engagements: [],
+      activeEngagementId: null,
+      engagementsLoaded: false,
+      manualFindings: [],
+      scanResult: null,
+      scanRunning: false,
+      screenshotUrls: {},
     };
 
     function escapeHtml(value) {
@@ -290,28 +654,236 @@
     }
 
     function severityStyle(sev) {
-      const map = {
-        critical: 'text-red-800 bg-red-50 border-red-200',
-        high: 'text-orange-800 bg-orange-50 border-orange-200',
-        medium: 'text-amber-800 bg-amber-50 border-amber-200',
-        low: 'text-sky-800 bg-sky-50 border-sky-200',
-        info: 'text-slate-700 bg-slate-100 border-slate-200',
+      const value = String(sev || 'info').toLowerCase();
+      const known = ['critical', 'high', 'medium', 'low', 'info'];
+      return `sev sev-${known.includes(value) ? value : 'info'}`;
+    }
+
+    const ICONS = {
+      findings: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+      diff: '<path d="M7 4v13"/><path d="m3 8 4-4 4 4"/><path d="M17 20V7"/><path d="m13 16 4 4 4-4"/>',
+      history: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/>',
+      audit: '<rect x="8" y="3" width="8" height="4" rx="1"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/><path d="M8 12h8"/><path d="M8 16h5"/>',
+      pentest: '<path d="M12 3 4 6v6c0 5 3.6 8.2 8 9 4.4-.8 8-4 8-9V6l-8-3z"/><path d="m9 12 2 2 4-4"/>',
+      shield: '<path d="M12 3 4 6v6c0 5 3.6 8.2 8 9 4.4-.8 8-4 8-9V6l-8-3z"/>',
+      target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+      scan: '<path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/>',
+      check: '<path d="M20 6 9 17l-5-5"/>',
+      warning: '<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+      info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/>',
+      x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+      plus: '<path d="M12 5v14"/><path d="M5 12h14"/>',
+      download: '<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>',
+      file: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/>',
+      camera: '<path d="M4 7h3l2-2h6l2 2h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/>',
+      refresh: '<path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/>',
+      trash: '<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>',
+      calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M3 10h18"/>',
+      user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/>',
+    };
+
+    function icon(name, cls = 'w-4 h-4') {
+      const body = ICONS[name] || '';
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="${cls}" aria-hidden="true">${body}</svg>`;
+    }
+
+    function hydrateIcons(root = document) {
+      root.querySelectorAll('[data-icon]').forEach(el => {
+        el.innerHTML = icon(el.dataset.icon, el.dataset.iconClass || 'w-4 h-4');
+      });
+    }
+
+    function todayIso(offsetDays = 0) {
+      const d = new Date();
+      d.setDate(d.getDate() + offsetDays);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+
+    function toast(message, type = 'success', timeout = 4200) {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const isError = type === 'error';
+      const isInfo = type === 'info';
+      const tone = isError ? 'toast--error' : isInfo ? 'toast--info' : '';
+      const el = document.createElement('div');
+      el.className = `toast ${tone}`.trim();
+      el.setAttribute('role', isError ? 'alert' : 'status');
+      el.innerHTML = `
+        <div class="toast__body">${escapeHtml(message)}</div>
+        <button type="button" class="toast__close" aria-label="Dismiss">${icon('x', 'w-4 h-4')}</button>`;
+      const remove = () => {
+        if (!el.isConnected) return;
+        el.classList.add('is-leaving');
+        setTimeout(() => el.remove(), 160);
       };
-      return map[sev] || map.info;
+      el.querySelector('.toast__close').addEventListener('click', remove);
+      container.appendChild(el);
+      if (timeout) setTimeout(remove, timeout);
+    }
+
+    function setButtonLoading(btn, loading, label) {
+      if (!btn) return;
+      if (loading) {
+        if (!btn.dataset.originalHtml) btn.dataset.originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = `<span class="inline-flex items-center justify-center gap-2"><span class="spinner"></span><span>${escapeHtml(label || 'Working...')}</span></span>`;
+      } else {
+        btn.disabled = false;
+        if (btn.dataset.originalHtml) {
+          btn.innerHTML = btn.dataset.originalHtml;
+          delete btn.dataset.originalHtml;
+        }
+      }
+    }
+
+    function severityBadge(sev) {
+      const value = String(sev || 'info').toLowerCase();
+      const label = value.charAt(0).toUpperCase() + value.slice(1);
+      return `<span class="${severityStyle(value)}">${escapeHtml(label)}</span>`;
+    }
+
+    function engagementStatusBadge(status) {
+      const value = String(status || 'unknown').toLowerCase();
+      const map = {
+        active: 'pill-active',
+        completed: 'pill-completed',
+        on_hold: 'pill-hold',
+        paused: 'pill-hold',
+        archived: 'pill-muted',
+      };
+      const label = value.replace(/_/g, ' ');
+      const pretty = label.charAt(0).toUpperCase() + label.slice(1);
+      return `<span class="pill ${map[value] || 'pill-muted'}">${escapeHtml(pretty)}</span>`;
+    }
+
+    function manualStatusBadge(status) {
+      const value = String(status || 'unknown').toLowerCase();
+      const map = {
+        open: 'pill-critical',
+        remediated: 'pill-active',
+        accepted_risk: 'pill-hold',
+        false_positive: 'pill-muted',
+        retested: 'pill-completed',
+      };
+      const label = value.replace(/_/g, ' ');
+      const pretty = label.charAt(0).toUpperCase() + label.slice(1);
+      return `<span class="pill ${map[value] || 'pill-muted'}">${escapeHtml(pretty)}</span>`;
+    }
+
+    function findingCard(f) {
+      return `
+        <details class="group p-4 hover:bg-slate-50/70 transition-colors">
+          <summary class="flex flex-wrap items-center justify-between gap-3 cursor-pointer list-none">
+            <div class="flex items-center gap-3 min-w-0">
+              ${severityBadge(f.severity)}
+              <span class="text-sm font-semibold text-slate-900">${escapeHtml(f.title)}</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-500 font-mono">
+              <span>${escapeHtml(f.host)}</span>
+              <span aria-hidden="true">&middot;</span>
+              <span>${escapeHtml(f.scanner)}</span>
+            </div>
+          </summary>
+          <div class="mt-3 pt-3 border-t border-slate-100 space-y-2 text-xs text-slate-700">
+            <p><strong>Why it matters:</strong> ${escapeHtml(f.explanation)}</p>
+            <p><strong>Evidence:</strong> <code class="font-mono bg-slate-100 px-1.5 py-0.5 rounded break-all">${escapeHtml(f.evidence)}</code></p>
+            <p><strong>Remediation:</strong> ${escapeHtml(f.remediation)}</p>
+          </div>
+        </details>`;
+    }
+
+    function screenshotChip(path) {
+      const url = state.screenshotUrls[path];
+      const name = String(path).split(/[\\/]/).pop() || path;
+      if (url) {
+        return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="group relative block h-16 w-24 overflow-hidden rounded-md border border-slate-200 bg-slate-100" title="${escapeHtml(path)}">
+          <img src="${escapeHtml(url)}" alt="Finding screenshot" class="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105" />
+        </a>`;
+      }
+      return `<span class="inline-flex max-w-[14rem] items-center gap-1.5 px-2 py-1 rounded-md border border-slate-200 bg-slate-50 text-[11px] text-slate-600" title="${escapeHtml(path)}">${icon('file', 'w-3.5 h-3.5 text-slate-400')}<span class="truncate font-mono">${escapeHtml(name)}</span></span>`;
+    }
+
+    function manualFindingCard(f) {
+      const screenshots = f.screenshots || [];
+      const hasPersistedOnly = screenshots.some(p => !state.screenshotUrls[p]);
+      const shotHtml = screenshots.length
+        ? `<div class="mt-3">
+            <div class="text-[11px] font-semibold text-slate-600 mb-1.5">Screenshots (${screenshots.length})</div>
+            <div class="flex flex-wrap gap-2">${screenshots.map(screenshotChip).join('')}</div>
+            ${hasPersistedOnly ? '<p class="mt-1.5 text-[11px] text-slate-400">Persisted evidence paths are not served by the API; only screenshots uploaded in this session can be previewed.</p>' : ''}
+          </div>`
+        : '';
+      const meta = [];
+      if (f.cvss_score != null) meta.push(`CVSS ${f.cvss_score}`);
+      if (f.owasp_category) meta.push(f.owasp_category);
+      if (f.cvss_vector) meta.push(f.cvss_vector);
+      return `
+        <div class="p-4 space-y-3">
+          <div class="flex flex-wrap items-start justify-between gap-2">
+            <div class="flex items-start gap-3 min-w-0">
+              ${severityBadge(f.severity)}
+              <div class="min-w-0">
+                <div class="text-sm font-semibold text-slate-900">${escapeHtml(f.title)}</div>
+                <div class="text-xs text-slate-500 font-mono mt-0.5">${escapeHtml(f.affected_host)} &middot; by ${escapeHtml(f.discovered_by)}</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              ${manualStatusBadge(f.status)}
+              <span class="text-[11px] text-slate-400 font-mono">#${f.id}</span>
+            </div>
+          </div>
+          ${meta.length ? `<div class="flex flex-wrap gap-1.5 text-[11px]">${meta.map(m => `<span class="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-600 font-mono">${escapeHtml(m)}</span>`).join('')}</div>` : ''}
+          ${f.description ? `<p class="text-xs text-slate-700"><strong>Description:</strong> ${escapeHtml(f.description)}</p>` : ''}
+          ${f.evidence ? `<p class="text-xs text-slate-700"><strong>Evidence:</strong> <code class="font-mono bg-slate-100 px-1.5 py-0.5 rounded break-all">${escapeHtml(f.evidence)}</code></p>` : ''}
+          ${f.remediation ? `<p class="text-xs text-slate-700"><strong>Remediation:</strong> ${escapeHtml(f.remediation)}</p>` : ''}
+          ${shotHtml}
+          ${f.retest_notes ? `<p class="text-xs text-slate-600"><strong>Retest notes:</strong> ${escapeHtml(f.retest_notes)}${f.retested_at ? ` <span class="text-slate-400">(${escapeHtml(formatDate(f.retested_at))})</span>` : ''}</p>` : ''}
+          <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
+            <input id="screenshot-input-${f.id}" type="file" accept=".png,.jpg,.jpeg,.gif,.webp" class="hidden" onchange="handleScreenshotChange(${f.id}, this)" />
+            <button type="button" onclick="triggerScreenshotUpload(${f.id})"
+              class="btn inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium border border-line-strong text-slate-700 rounded-md hover:bg-slate-50">
+              ${icon('camera', 'w-3.5 h-3.5')}Attach Screenshot
+            </button>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <select id="retest-status-${f.id}" class="px-2 py-1.5 text-[11px] border border-line-strong rounded-md bg-white">
+                ${['open', 'remediated', 'accepted_risk', 'false_positive'].map(s => `<option value="${s}" ${f.status === s ? 'selected' : ''}>${s.replace(/_/g, ' ')}</option>`).join('')}
+              </select>
+              <input id="retest-notes-${f.id}" type="text" placeholder="Retest notes"
+                class="w-40 px-2 py-1.5 text-[11px] border border-line-strong rounded-md" />
+              <button type="button" onclick="submitRetest(${f.id})"
+                class="btn inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold bg-ink text-white rounded-md hover:opacity-90">
+                ${icon('refresh', 'w-3.5 h-3.5')}Update
+              </button>
+            </div>
+          </div>
+        </div>`;
     }
 
     async function apiFetch(url, options = {}) {
-      const res = await fetch(url, {
-        headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
-        ...options,
-      });
+      const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
+      const headers = { ...(options.headers || {}) };
+      if (!isFormData) headers['Content-Type'] = 'application/json';
+      const res = await fetch(url, { ...options, headers });
       if (!res.ok) {
         let msg = `Request failed (${res.status})`;
+        let detail = null;
         try {
           const data = await res.json();
-          msg = data.detail || msg;
+          detail = data.detail || null;
+          if (Array.isArray(detail)) {
+            msg = detail.map(d => (d && (d.msg || d.message)) || JSON.stringify(d)).join('; ');
+            detail = msg;
+          } else if (detail) {
+            msg = detail;
+          }
         } catch {}
-        throw new Error(msg);
+        const err = new Error(msg);
+        err.status = res.status;
+        err.detail = detail;
+        throw err;
       }
       if (res.status === 204) return null;
       return res.json();
@@ -347,7 +919,7 @@
         const verColor = d.verified ? 'text-emerald-700' : 'text-amber-700';
         return `
           <button type="button" onclick="selectDomain(${d.id})"
-            class="w-full text-left px-5 py-3.5 transition-colors ${active ? 'bg-blue-50/70' : 'hover:bg-slate-50'}">
+            class="w-full text-left px-5 py-3.5 transition-colors ${active ? 'bg-accent-soft' : 'hover:bg-[#F1F3F6]'}">
             <div class="flex items-center justify-between gap-2">
               <span class="font-mono text-sm font-semibold text-slate-900 truncate">${escapeHtml(d.name)}</span>
               <span class="font-mono tabular-nums text-xs font-bold text-slate-800">${d.latest_risk_score}/100</span>
@@ -364,6 +936,8 @@
 
     async function selectDomain(id) {
       state.activeDomainId = id;
+      if (state.activeTab === 'pentest') state.activeTab = 'findings';
+      applyTabState();
       renderDomainList();
       await loadActiveDomainData();
     }
@@ -428,18 +1002,41 @@
       renderActiveTab();
     }
 
+    function applyTabState() {
+      const isPentest = state.activeTab === 'pentest';
+      const domainMain = document.getElementById('domain-main');
+      const pentestMain = document.getElementById('pentest-main');
+      if (domainMain) domainMain.style.display = isPentest ? 'none' : '';
+      if (pentestMain) pentestMain.style.display = isPentest ? 'grid' : 'none';
+      const scanBtn = document.getElementById('header-scan-btn');
+      if (scanBtn) scanBtn.classList.toggle('hidden', isPentest);
+      document.querySelectorAll('.topnav-btn').forEach(btn => {
+        btn.classList.toggle('is-active', btn.dataset.tab === state.activeTab);
+      });
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('is-active', btn.dataset.tab === state.activeTab);
+      });
+      DOMAIN_TABS.forEach(name => {
+        const el = document.getElementById(`tab-${name}`);
+        if (!el) return;
+        const isCurrent = name === state.activeTab;
+        el.classList.toggle('hidden', !isCurrent);
+        if (isCurrent) {
+          el.classList.remove('tab-fade');
+          void el.offsetWidth;
+          el.classList.add('tab-fade');
+        }
+      });
+    }
+
     function switchTab(tabName) {
       state.activeTab = tabName;
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        const isCurrent = btn.dataset.tab === tabName;
-        btn.className = isCurrent
-          ? 'tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-md bg-white text-slate-900 shadow-sm'
-          : 'tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900';
-      });
-      ['findings', 'diff', 'history', 'audit'].forEach(name => {
-        document.getElementById(`tab-${name}`).classList.toggle('hidden', name !== tabName);
-      });
-      renderActiveTab();
+      applyTabState();
+      if (tabName === 'pentest') {
+        loadEngagements(state.activeEngagementId).catch(err => toast(err.message, 'error'));
+      } else {
+        renderActiveTab();
+      }
     }
 
     function renderActiveTab() {
@@ -470,28 +1067,7 @@
         return;
       }
 
-      container.innerHTML = filtered.map(f => `
-        <details class="group p-4 hover:bg-slate-50/70 transition-colors">
-          <summary class="flex flex-wrap items-center justify-between gap-3 cursor-pointer list-none">
-            <div class="flex items-center gap-3 min-w-0">
-              <span class="px-2 py-0.5 text-[11px] font-mono font-semibold uppercase border rounded ${severityStyle(f.severity)}">
-                ${escapeHtml(f.severity)}
-              </span>
-              <span class="text-sm font-semibold text-slate-900">${escapeHtml(f.title)}</span>
-            </div>
-            <div class="flex items-center gap-2 text-xs text-slate-500 font-mono">
-              <span>${escapeHtml(f.host)}</span>
-              <span aria-hidden="true">&middot;</span>
-              <span>${escapeHtml(f.scanner)}</span>
-            </div>
-          </summary>
-          <div class="mt-3 pt-3 border-t border-slate-100 space-y-2 text-xs text-slate-700">
-            <p><strong>Why it matters:</strong> ${escapeHtml(f.explanation)}</p>
-            <p><strong>Evidence:</strong> <code class="font-mono bg-slate-100 px-1.5 py-0.5 rounded">${escapeHtml(f.evidence)}</code></p>
-            <p><strong>Remediation:</strong> ${escapeHtml(f.remediation)}</p>
-          </div>
-        </details>
-      `).join('');
+      container.innerHTML = filtered.map(f => findingCard(f)).join('');
     }
 
     function renderDiffGroup(label, items, toneClass) {
@@ -508,7 +1084,7 @@
         : '<div class="px-4 py-3 text-xs text-slate-500">None</div>';
 
       return `
-        <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div class="card bg-white border border-slate-200 rounded-xl overflow-hidden">
           <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
             <h3 class="text-xs font-bold ${toneClass}">${label}</h3>
             <span class="font-mono tabular-nums text-xs text-slate-500">${items.length}</span>
@@ -521,7 +1097,7 @@
     function renderDiff() {
       const container = document.getElementById('tab-diff');
       if (!state.diff || !state.diff.current_scan_id) {
-        container.innerHTML = '<div class="bg-white border border-slate-200 rounded-xl p-8 text-center text-xs text-slate-500">Run at least one scan to see changes over time.</div>';
+        container.innerHTML = '<div class="card bg-white border border-slate-200 rounded-xl p-8 text-center text-xs text-slate-500">Run at least one scan to see changes over time.</div>';
         return;
       }
       container.innerHTML = [
@@ -538,28 +1114,30 @@
         return;
       }
       container.innerHTML = `
-        <table class="w-full text-left text-xs">
-          <thead class="bg-slate-50 border-b border-slate-200 text-slate-600">
-            <tr>
-              <th class="px-4 py-2.5 font-semibold">Scan</th>
-              <th class="px-4 py-2.5 font-semibold">Started</th>
-              <th class="px-4 py-2.5 font-semibold">Trigger</th>
-              <th class="px-4 py-2.5 font-semibold">Hosts</th>
-              <th class="px-4 py-2.5 font-semibold text-right">Risk Score</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100">
-            ${state.scans.map(s => `
+        <div class="overflow-x-auto scroll-thin">
+          <table class="w-full min-w-[640px] text-left text-xs">
+            <thead class="bg-slate-50 border-b border-slate-200 text-slate-600">
               <tr>
-                <td class="px-4 py-3 font-mono tabular-nums">#${s.id} (${escapeHtml(s.status)})</td>
-                <td class="px-4 py-3 font-mono tabular-nums text-slate-600">${formatDate(s.started_at)}</td>
-                <td class="px-4 py-3">${escapeHtml(s.triggered_by)} · ${escapeHtml(s.actor)}</td>
-                <td class="px-4 py-3 font-mono tabular-nums">${s.discovered_hosts.length}</td>
-                <td class="px-4 py-3 font-mono tabular-nums font-bold text-right">${s.risk_score}/100</td>
+                <th class="px-4 py-2.5 font-semibold">Scan</th>
+                <th class="px-4 py-2.5 font-semibold">Started</th>
+                <th class="px-4 py-2.5 font-semibold">Trigger</th>
+                <th class="px-4 py-2.5 font-semibold">Hosts</th>
+                <th class="px-4 py-2.5 font-semibold text-right">Risk Score</th>
               </tr>
-            `).join('')}
-          </tbody>
-        </table>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              ${state.scans.map(s => `
+                <tr>
+                  <td class="px-4 py-3 font-mono tabular-nums">#${s.id} (${escapeHtml(s.status)})</td>
+                  <td class="px-4 py-3 font-mono tabular-nums text-slate-600">${formatDate(s.started_at)}</td>
+                  <td class="px-4 py-3">${escapeHtml(s.triggered_by)} · ${escapeHtml(s.actor)}</td>
+                  <td class="px-4 py-3 font-mono tabular-nums">${s.discovered_hosts.length}</td>
+                  <td class="px-4 py-3 font-mono tabular-nums font-bold text-right">${s.risk_score}/100</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
       `;
     }
 
@@ -570,28 +1148,30 @@
         return;
       }
       container.innerHTML = `
-        <table class="w-full text-left text-xs">
-          <thead class="bg-slate-50 border-b border-slate-200 text-slate-600">
-            <tr>
-              <th class="px-4 py-2.5 font-semibold">Timestamp</th>
-              <th class="px-4 py-2.5 font-semibold">Actor</th>
-              <th class="px-4 py-2.5 font-semibold">Action</th>
-              <th class="px-4 py-2.5 font-semibold">Domain</th>
-              <th class="px-4 py-2.5 font-semibold">Details</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100">
-            ${state.auditLogs.map(log => `
+        <div class="overflow-x-auto scroll-thin">
+          <table class="w-full min-w-[720px] text-left text-xs">
+            <thead class="bg-slate-50 border-b border-slate-200 text-slate-600">
               <tr>
-                <td class="px-4 py-2.5 font-mono tabular-nums text-slate-600 whitespace-nowrap">${formatDate(log.created_at)}</td>
-                <td class="px-4 py-2.5">${escapeHtml(log.actor)}</td>
-                <td class="px-4 py-2.5 font-mono">${escapeHtml(log.action)}</td>
-                <td class="px-4 py-2.5 font-mono">${escapeHtml(log.domain_name)}</td>
-                <td class="px-4 py-2.5 text-slate-600">${escapeHtml(log.details)}</td>
+                <th class="px-4 py-2.5 font-semibold">Timestamp</th>
+                <th class="px-4 py-2.5 font-semibold">Actor</th>
+                <th class="px-4 py-2.5 font-semibold">Action</th>
+                <th class="px-4 py-2.5 font-semibold">Domain</th>
+                <th class="px-4 py-2.5 font-semibold">Details</th>
               </tr>
-            `).join('')}
-          </tbody>
-        </table>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              ${state.auditLogs.map(log => `
+                <tr>
+                  <td class="px-4 py-2.5 font-mono tabular-nums text-slate-600 whitespace-nowrap">${formatDate(log.created_at)}</td>
+                  <td class="px-4 py-2.5">${escapeHtml(log.actor)}</td>
+                  <td class="px-4 py-2.5 font-mono">${escapeHtml(log.action)}</td>
+                  <td class="px-4 py-2.5 font-mono">${escapeHtml(log.domain_name)}</td>
+                  <td class="px-4 py-2.5 text-slate-600">${escapeHtml(log.details)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
       `;
     }
 
@@ -652,21 +1232,23 @@
       if (!state.activeDomainId || state.scanning) return;
       state.scanning = true;
       const btn = document.getElementById('header-scan-btn');
-      btn.disabled = true;
-      btn.textContent = 'Scanning...';
+      setButtonLoading(btn, true, 'Scanning...');
       setFeedback('Running passive discovery and non-intrusive checks...');
+      toast('Running passive discovery and safe checks...', 'info', 2400);
       try {
         await apiFetch(`/api/domains/${state.activeDomainId}/scan`, {
           method: 'POST',
           body: JSON.stringify({ actor: 'local-owner' }),
         });
         setFeedback('Scan completed successfully.');
+        toast('Scan completed successfully.');
         await loadDomains(state.activeDomainId);
       } catch (err) {
         setFeedback(err.message, true);
+        toast(err.message, 'error');
       } finally {
         state.scanning = false;
-        btn.textContent = 'Run Scan';
+        setButtonLoading(btn, false);
         const active = state.domains.find(d => d.id === state.activeDomainId);
         btn.disabled = !(active && active.verified);
       }
@@ -683,8 +1265,10 @@
           }),
         });
         setFeedback('Schedule updated.');
+        toast('Schedule updated.');
       } catch (err) {
         setFeedback(err.message, true);
+        toast(err.message, 'error');
       }
     }
 
@@ -697,9 +1281,12 @@
       if (!state.activeDomainId) return;
       try {
         const res = await apiFetch(`/api/domains/${state.activeDomainId}/notify`, { method: 'POST' });
-        setFeedback(res.details.join(' | '));
+        const text = (res.details && res.details.length) ? res.details.join(' | ') : 'Summary sent.';
+        setFeedback(text);
+        toast(text);
       } catch (err) {
         setFeedback(err.message, true);
+        toast(err.message, 'error');
       }
     }
 
@@ -708,13 +1295,449 @@
       try {
         await apiFetch(`/api/domains/${state.activeDomainId}`, { method: 'DELETE' });
         state.activeDomainId = null;
+        toast('Domain removed.');
         await loadDomains();
       } catch (err) {
         setFeedback(err.message, true);
+        toast(err.message, 'error');
       }
     }
 
-    loadDomains().catch(err => setFeedback(err.message, true));
+    async function loadEngagements(selectId = null) {
+      const engagements = await apiFetch('/api/engagements');
+      state.engagements = engagements;
+      state.engagementsLoaded = true;
+      document.getElementById('engagement-count').textContent = String(engagements.length);
+      const requested = selectId != null ? selectId : state.activeEngagementId;
+      if (requested != null && engagements.some(e => e.id === requested)) {
+        state.activeEngagementId = requested;
+      } else {
+        state.activeEngagementId = engagements.length ? engagements[0].id : null;
+      }
+      renderEngagementList();
+      await loadActiveEngagementData();
+    }
+
+    function renderEngagementList() {
+      const container = document.getElementById('engagement-list');
+      if (!state.engagements.length) {
+        container.innerHTML = '<div class="p-5 text-xs text-slate-500">No engagements yet. Create one above to begin.</div>';
+        return;
+      }
+      container.innerHTML = state.engagements.map(e => {
+        const active = e.id === state.activeEngagementId;
+        return `
+          <button type="button" onclick="selectEngagement(${e.id})"
+            class="w-full text-left px-5 py-3.5 transition-colors ${active ? 'bg-accent-soft' : 'hover:bg-[#F1F3F6]'}">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-sm font-semibold text-slate-900 truncate">${escapeHtml(e.client_name)}</span>
+              ${engagementStatusBadge(e.status)}
+            </div>
+            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 mt-1.5">
+              <span class="font-mono tabular-nums">${e.finding_count} finding(s)</span>
+              <span class="font-medium text-slate-700">${escapeHtml(e.risk_grade)} risk</span>
+            </div>
+            <div class="text-[11px] text-slate-400 mt-1 font-mono tabular-nums">${escapeHtml(e.start_date)} &rarr; ${escapeHtml(e.end_date)}</div>
+          </button>`;
+      }).join('');
+    }
+
+    async function selectEngagement(id) {
+      state.activeEngagementId = id;
+      state.scanResult = null;
+      const targetEl = document.getElementById('scan-target');
+      if (targetEl) targetEl.value = '';
+      renderEngagementList();
+      try {
+        await loadActiveEngagementData();
+      } catch (err) {
+        toast(err.message, 'error');
+      }
+    }
+
+    async function loadActiveEngagementData() {
+      const engagement = state.engagements.find(e => e.id === state.activeEngagementId);
+      const emptyEl = document.getElementById('engagement-empty');
+      const workEl = document.getElementById('engagement-workspace');
+      if (!engagement) {
+        emptyEl.classList.remove('hidden');
+        workEl.classList.add('hidden');
+        return;
+      }
+      emptyEl.classList.add('hidden');
+      workEl.classList.remove('hidden');
+      renderEngagementHeader(engagement);
+      const findings = await apiFetch(`/api/engagements/${engagement.id}/manual-findings`);
+      if (state.activeEngagementId !== engagement.id) return;
+      state.manualFindings = findings;
+      renderManualFindings();
+      renderScanResult();
+    }
+
+    function renderEngagementHeader(e) {
+      document.getElementById('eng-title').textContent = e.client_name;
+      document.getElementById('eng-status-badge').innerHTML = engagementStatusBadge(e.status);
+      document.getElementById('eng-meta').textContent = `Authorization: ${e.authorization_reference} · Tester: ${e.tester}`;
+      document.getElementById('eng-finding-count').textContent = String(e.finding_count);
+      document.getElementById('eng-risk-grade').textContent = e.risk_grade;
+      document.getElementById('eng-window').textContent = `${e.start_date} → ${e.end_date}`;
+      document.getElementById('eng-created').textContent = `Created ${formatDate(e.created_at)}`;
+
+      const sel = document.getElementById('eng-status-select');
+      if (![...sel.options].some(o => o.value === e.status)) {
+        const opt = document.createElement('option');
+        opt.value = e.status;
+        opt.textContent = e.status;
+        sel.appendChild(opt);
+      }
+      sel.value = e.status;
+
+      const scopeEl = document.getElementById('eng-scope');
+      scopeEl.innerHTML = (e.scope || []).length
+        ? e.scope.map(s => `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200 text-xs font-mono text-slate-700">${icon('target', 'w-3.5 h-3.5 text-slate-500')}${escapeHtml(s)}</span>`).join('')
+        : '<span class="text-xs text-slate-500">No scope entries.</span>';
+
+      const notesEl = document.getElementById('eng-notes');
+      if (e.notes) {
+        notesEl.textContent = `Notes: ${e.notes}`;
+        notesEl.classList.remove('hidden');
+      } else {
+        notesEl.classList.add('hidden');
+      }
+
+      const targetEl = document.getElementById('scan-target');
+      targetEl.placeholder = (e.scope && e.scope[0]) || 'target in scope';
+      renderScanAvailability(e);
+    }
+
+    function renderScanAvailability(e) {
+      const warning = document.getElementById('scan-window-warning');
+      const btn = document.getElementById('engagement-scan-btn');
+      if (!warning || !btn) return;
+      const today = todayIso();
+      let reason = '';
+      if (e.status !== 'active') reason = `Status is "${e.status.replace(/_/g, ' ')}" — scans require Active`;
+      else if (today < e.start_date) reason = `Authorized window opens ${e.start_date}`;
+      else if (today > e.end_date) reason = `Authorized window closed ${e.end_date}`;
+      if (reason) {
+        warning.classList.remove('hidden');
+        warning.innerHTML = `<span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-800 bg-amber-50 border border-amber-200 rounded-full px-2.5 py-1">${icon('warning', 'w-3.5 h-3.5')}<span>${escapeHtml(reason)}</span></span>`;
+        if (!state.scanRunning) btn.disabled = true;
+      } else {
+        warning.classList.add('hidden');
+        warning.innerHTML = '';
+        if (!state.scanRunning) btn.disabled = false;
+      }
+    }
+
+    function renderScanResult() {
+      const container = document.getElementById('scan-result');
+      const result = state.scanResult;
+      if (!result || result.engagement_id !== state.activeEngagementId) {
+        container.classList.add('hidden');
+        container.innerHTML = '';
+        return;
+      }
+      container.classList.remove('hidden');
+      if (result.blocked) {
+        container.innerHTML = `
+          <div class="rounded-lg border border-red-200 bg-red-50 p-4">
+            <div class="flex items-start gap-3">
+              <span class="text-red-600 mt-0.5">${icon('warning', 'w-5 h-5')}</span>
+              <div class="min-w-0">
+                <p class="text-sm font-semibold text-red-900">Scan blocked by scope enforcement</p>
+                <p class="text-xs text-red-800 mt-1">${escapeHtml(result.detail || result.error || 'Target rejected.')}</p>
+                <p class="text-[11px] text-red-700 mt-2 font-mono break-all">tool=${escapeHtml(result.tool)} · target=${escapeHtml(result.target)}</p>
+              </div>
+            </div>
+          </div>`;
+        return;
+      }
+      const findings = result.findings || [];
+      container.innerHTML = `
+        <div class="rounded-lg border ${result.tool_available ? 'border-emerald-200 bg-emerald-50' : 'border-amber-200 bg-amber-50'} p-4 space-y-3">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div class="flex items-start gap-3">
+              <span class="${result.tool_available ? 'text-emerald-700' : 'text-amber-700'} mt-0.5">${icon(result.tool_available ? 'check' : 'warning', 'w-5 h-5')}</span>
+              <div>
+                <p class="text-sm font-semibold text-slate-900">${escapeHtml(result.message || 'Scan finished.')}</p>
+                <p class="text-xs text-slate-600 mt-1 font-mono">${escapeHtml(result.tool)} · ${escapeHtml(result.target)} · ${result.findings_created} finding(s)</p>
+              </div>
+            </div>
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${result.tool_available ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${result.tool_available ? 'Tool available' : 'Fallback recorded'}</span>
+          </div>
+          ${result.error ? `<p class="text-xs text-amber-800">${escapeHtml(result.error)}</p>` : ''}
+          ${result.raw_command ? `<div><div class="text-[11px] font-semibold text-slate-600 mb-1">Command</div><code class="block text-[11px] font-mono bg-white/70 border border-slate-200 rounded px-2 py-1.5 break-all">${escapeHtml(result.raw_command)}</code></div>` : ''}
+          ${findings.length ? `<div class="rounded-md border border-slate-200 bg-white overflow-hidden divide-y divide-slate-100">${findings.map(f => findingCard(f)).join('')}</div>` : ''}
+        </div>`;
+    }
+
+    function renderManualFindings() {
+      const container = document.getElementById('manual-findings-list');
+      document.getElementById('manual-count').textContent = String(state.manualFindings.length);
+      if (!state.manualFindings.length) {
+        container.innerHTML = '<div class="p-8 text-center text-xs text-slate-500">No manual findings yet. Use "Add Manual Finding" above to record a validated issue.</div>';
+        return;
+      }
+      container.innerHTML = state.manualFindings.map(manualFindingCard).join('');
+    }
+
+    function normalizeScopeEntry(raw) {
+      let value = String(raw || '').trim();
+      if (!value) return '';
+      const isCidr = /^[0-9a-f:.]+\/\d{1,3}$/i.test(value);
+      const isWildcard = value.startsWith('*.');
+      const isIpv6 = !isCidr && !value.includes('/') && value.includes(':') && /^[0-9a-f:]+$/i.test(value);
+      if (/^[a-z][a-z0-9+.-]*:\/\//i.test(value)) {
+        try {
+          value = new URL(value).hostname;
+        } catch {
+          return value;
+        }
+      } else if (!isCidr && !isWildcard && !isIpv6) {
+        try {
+          const parsed = new URL(`http://${value}`);
+          if (parsed.hostname) value = parsed.hostname;
+        } catch {}
+      }
+      return value.trim().toLowerCase().replace(/\.$/, '');
+    }
+
+    function parseScopeEntries(text) {
+      const items = [];
+      String(text || '').split(/\r?\n/).forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed) return;
+        if (/^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed)) {
+          trimmed.split(/,\s*(?=[a-z][a-z0-9+.-]*:\/\/)/i).forEach(part => items.push(part));
+        } else {
+          trimmed.split(',').forEach(part => items.push(part));
+        }
+      });
+      return items.map(normalizeScopeEntry).filter(Boolean);
+    }
+
+    function setDefaultEngagementDates() {
+      const start = document.getElementById('eng-start-date');
+      const end = document.getElementById('eng-end-date');
+      if (start && !start.value) start.value = todayIso();
+      if (end && !end.value) end.value = todayIso(14);
+    }
+
+    async function submitEngagement(event) {
+      event.preventDefault();
+      const btn = document.getElementById('create-engagement-btn');
+      const scope = parseScopeEntries(document.getElementById('eng-scope').value);
+      if (!scope.length) {
+        toast('Add at least one authorized scope entry.', 'error');
+        return;
+      }
+      const payload = {
+        client_name: document.getElementById('eng-client').value.trim(),
+        authorization_reference: document.getElementById('eng-auth-ref').value.trim(),
+        scope,
+        start_date: document.getElementById('eng-start-date').value,
+        end_date: document.getElementById('eng-end-date').value,
+        tester: document.getElementById('eng-tester').value.trim() || 'local-owner',
+        notes: document.getElementById('eng-notes').value.trim(),
+      };
+      setButtonLoading(btn, true, 'Creating...');
+      try {
+        const created = await apiFetch('/api/engagements', { method: 'POST', body: JSON.stringify(payload) });
+        document.getElementById('engagement-form').reset();
+        document.getElementById('eng-tester').value = 'local-owner';
+        setDefaultEngagementDates();
+        toast('Engagement created.');
+        await loadEngagements(created.id);
+      } catch (err) {
+        toast(err.message, 'error');
+      } finally {
+        setButtonLoading(btn, false);
+      }
+    }
+
+    async function runEngagementScan(event) {
+      event.preventDefault();
+      if (!state.activeEngagementId || state.scanRunning) return;
+      const engagement = state.engagements.find(e => e.id === state.activeEngagementId);
+      const target = document.getElementById('scan-target').value.trim();
+      const tool = document.getElementById('scan-tool').value;
+      if (!target) {
+        toast('Enter a target host or URL.', 'error');
+        return;
+      }
+      const btn = document.getElementById('engagement-scan-btn');
+      state.scanRunning = true;
+      setButtonLoading(btn, true, 'Scanning...');
+      try {
+        const res = await apiFetch(`/api/engagements/${state.activeEngagementId}/scan`, {
+          method: 'POST',
+          body: JSON.stringify({ target, tool, actor: (engagement && engagement.tester) || 'local-owner' }),
+        });
+        state.scanResult = res;
+        renderScanResult();
+        toast(res.message || 'Scan completed.', res.tool_available ? 'success' : 'error', res.tool_available ? 4200 : 7000);
+        await loadEngagements(state.activeEngagementId);
+      } catch (err) {
+        if (err.status === 403) {
+          state.scanResult = {
+            engagement_id: state.activeEngagementId,
+            target,
+            tool,
+            blocked: true,
+            detail: err.detail || err.message,
+            message: 'Scan blocked',
+            findings: [],
+          };
+          renderScanResult();
+          toast(err.message, 'error', 7000);
+        } else {
+          toast(err.message, 'error');
+        }
+      } finally {
+        state.scanRunning = false;
+        setButtonLoading(btn, false);
+        const current = state.engagements.find(e => e.id === state.activeEngagementId);
+        if (current) renderScanAvailability(current);
+        else btn.disabled = false;
+      }
+    }
+
+    async function submitManualFinding(event) {
+      event.preventDefault();
+      if (!state.activeEngagementId) return;
+      const btn = document.getElementById('save-manual-btn');
+      const cvssRaw = document.getElementById('mf-cvss').value.trim();
+      const payload = {
+        title: document.getElementById('mf-title').value.trim(),
+        affected_host: document.getElementById('mf-host').value.trim(),
+        severity: document.getElementById('mf-severity').value,
+        cvss_score: cvssRaw === '' ? null : Number(cvssRaw),
+        cvss_vector: document.getElementById('mf-cvss-vector').value.trim() || null,
+        owasp_category: document.getElementById('mf-owasp').value.trim() || null,
+        description: document.getElementById('mf-description').value.trim(),
+        evidence: document.getElementById('mf-evidence').value.trim(),
+        remediation: document.getElementById('mf-remediation').value.trim(),
+        discovered_by: document.getElementById('mf-discovered-by').value.trim() || 'local-owner',
+      };
+      setButtonLoading(btn, true, 'Saving...');
+      try {
+        await apiFetch(`/api/engagements/${state.activeEngagementId}/manual-findings`, {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        });
+        document.getElementById('manual-finding-form').reset();
+        document.getElementById('mf-discovered-by').value = 'local-owner';
+        document.getElementById('mf-severity').value = 'medium';
+        document.getElementById('manual-finding-details').open = false;
+        toast('Manual finding saved.');
+        await loadEngagements(state.activeEngagementId);
+      } catch (err) {
+        toast(err.message, 'error');
+      } finally {
+        setButtonLoading(btn, false);
+      }
+    }
+
+    function triggerScreenshotUpload(id) {
+      const input = document.getElementById(`screenshot-input-${id}`);
+      if (input) input.click();
+    }
+
+    async function handleScreenshotChange(id, input) {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      if (!/\.(png|jpe?g|gif|webp)$/i.test(file.name)) {
+        toast('Only PNG, JPG, GIF or WEBP screenshots are allowed.', 'error');
+        input.value = '';
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        toast('Screenshot exceeds the 10MB limit.', 'error');
+        input.value = '';
+        return;
+      }
+      const fd = new FormData();
+      fd.append('file', file);
+      try {
+        const updated = await apiFetch(`/api/engagements/${state.activeEngagementId}/manual-findings/${id}/screenshot`, {
+          method: 'POST',
+          body: fd,
+        });
+        const newPath = updated.screenshots[updated.screenshots.length - 1];
+        if (newPath) state.screenshotUrls[newPath] = URL.createObjectURL(file);
+        const idx = state.manualFindings.findIndex(f => f.id === id);
+        if (idx >= 0) state.manualFindings[idx] = updated;
+        renderManualFindings();
+        toast('Screenshot attached.');
+      } catch (err) {
+        toast(err.message, 'error');
+      } finally {
+        input.value = '';
+      }
+    }
+
+    async function submitRetest(id) {
+      if (!state.activeEngagementId) return;
+      const status = document.getElementById(`retest-status-${id}`).value;
+      const notes = document.getElementById(`retest-notes-${id}`).value.trim();
+      try {
+        const updated = await apiFetch(`/api/engagements/${state.activeEngagementId}/manual-findings/${id}/retest`, {
+          method: 'PATCH',
+          body: JSON.stringify({ status, retest_notes: notes || null }),
+        });
+        const idx = state.manualFindings.findIndex(f => f.id === id);
+        if (idx >= 0) state.manualFindings[idx] = updated;
+        renderManualFindings();
+        toast('Retest status updated.');
+      } catch (err) {
+        toast(err.message, 'error');
+      }
+    }
+
+    async function updateEngagementStatus(btn) {
+      if (!state.activeEngagementId) return;
+      const status = document.getElementById('eng-status-select').value;
+      setButtonLoading(btn, true, 'Updating...');
+      try {
+        const updated = await apiFetch(`/api/engagements/${state.activeEngagementId}/status`, {
+          method: 'PATCH',
+          body: JSON.stringify({ status }),
+        });
+        const idx = state.engagements.findIndex(e => e.id === updated.id);
+        if (idx >= 0) state.engagements[idx] = updated;
+        renderEngagementList();
+        renderEngagementHeader(updated);
+        toast('Engagement status updated.');
+      } catch (err) {
+        toast(err.message, 'error');
+      } finally {
+        setButtonLoading(btn, false);
+      }
+    }
+
+    function exportVapt(format) {
+      if (!state.activeEngagementId) return;
+      window.open(`/api/engagements/${state.activeEngagementId}/report?format=${encodeURIComponent(format)}`, '_blank', 'noopener');
+      toast(`Preparing ${format.toUpperCase()} report...`, 'info');
+    }
+
+    document.getElementById('engagement-form').addEventListener('submit', submitEngagement);
+    document.getElementById('active-scan-form').addEventListener('submit', runEngagementScan);
+    document.getElementById('manual-finding-form').addEventListener('submit', submitManualFinding);
+
+    async function init() {
+      hydrateIcons();
+      applyTabState();
+      setDefaultEngagementDates();
+      try {
+        await loadDomains();
+      } catch (err) {
+        toast(err.message, 'error');
+      }
+    }
+
+    init();
   </script>
 </body>
 </html>
