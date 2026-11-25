@@ -58,8 +58,72 @@
       --toast-top: 1rem;
       color-scheme: light;
     }
+    :root[data-theme="dark"] {
+      --canvas: #090E17;
+      --surface: #111827;
+      --muted: #94A3B8;
+      --faint: #64748B;
+      --line: #1F2937;
+      --line-strong: #334155;
+      --accent-soft: rgba(14, 124, 102, 0.22);
+      --critical-soft: rgba(239, 68, 68, 0.16);
+      --high-soft: rgba(245, 158, 11, 0.16);
+      --medium-soft: rgba(234, 179, 8, 0.16);
+      --low-soft: rgba(59, 130, 246, 0.16);
+      --info-soft: rgba(148, 163, 184, 0.14);
+      --shadow-card: 0 1px 2px rgba(0, 0, 0, .35);
+      --shadow-toast: 0 10px 30px rgba(0, 0, 0, .45);
+      color-scheme: dark;
+    }
     ::selection { background: #CFE9E2; }
+    :root[data-theme="dark"] ::selection { background: rgba(14, 124, 102, 0.4); }
     html, body { background: var(--canvas); color: var(--ink); overscroll-behavior: none; }
+    :root[data-theme="dark"] body { color: #E2E8F0; }
+    :root[data-theme="dark"] .bg-white,
+    :root[data-theme="dark"] .bg-white\/70 { background-color: var(--surface) !important; }
+    :root[data-theme="dark"] .bg-slate-50,
+    :root[data-theme="dark"] .bg-slate-100,
+    :root[data-theme="dark"] .bg-\[\#EEF1F5\] { background-color: #162032 !important; }
+    :root[data-theme="dark"] .hover\:bg-slate-50:hover,
+    :root[data-theme="dark"] .hover\:bg-slate-50\/70:hover,
+    :root[data-theme="dark"] .hover\:bg-\[\#F1F3F6\]:hover { background-color: #1B273B !important; }
+    :root[data-theme="dark"] .border-slate-200,
+    :root[data-theme="dark"] .border-slate-100,
+    :root[data-theme="dark"] .divide-slate-200 > :not([hidden]) ~ :not([hidden]),
+    :root[data-theme="dark"] .divide-slate-100 > :not([hidden]) ~ :not([hidden]) { border-color: var(--line) !important; }
+    :root[data-theme="dark"] .text-slate-900,
+    :root[data-theme="dark"] .text-slate-800 { color: #F1F5F9 !important; }
+    :root[data-theme="dark"] .text-slate-700 { color: #CBD5E1 !important; }
+    :root[data-theme="dark"] .text-slate-600,
+    :root[data-theme="dark"] .text-slate-500 { color: #94A3B8 !important; }
+    :root[data-theme="dark"] .text-slate-400 { color: #64748B !important; }
+    :root[data-theme="dark"] input,
+    :root[data-theme="dark"] select,
+    :root[data-theme="dark"] textarea { background-color: #0D1420; color: #F1F5F9; border-color: var(--line-strong); }
+    :root[data-theme="dark"] input::placeholder,
+    :root[data-theme="dark"] textarea::placeholder { color: #64748B; }
+    :root[data-theme="dark"] .bg-amber-50 { background-color: rgba(245, 158, 11, 0.12) !important; }
+    :root[data-theme="dark"] .border-amber-300,
+    :root[data-theme="dark"] .border-amber-200 { border-color: rgba(245, 158, 11, 0.3) !important; }
+    :root[data-theme="dark"] .text-amber-900,
+    :root[data-theme="dark"] .text-amber-800,
+    :root[data-theme="dark"] .text-amber-700 { color: #FBBF24 !important; }
+    :root[data-theme="dark"] .bg-emerald-50 { background-color: rgba(16, 185, 129, 0.12) !important; }
+    :root[data-theme="dark"] .bg-emerald-100 { background-color: rgba(16, 185, 129, 0.22) !important; }
+    :root[data-theme="dark"] .border-emerald-200 { border-color: rgba(16, 185, 129, 0.3) !important; }
+    :root[data-theme="dark"] .text-emerald-800,
+    :root[data-theme="dark"] .text-emerald-700 { color: #34D399 !important; }
+    :root[data-theme="dark"] .bg-red-50,
+    :root[data-theme="dark"] .hover\:bg-red-50:hover { background-color: rgba(239, 68, 68, 0.12) !important; }
+    :root[data-theme="dark"] .border-red-200 { border-color: rgba(239, 68, 68, 0.3) !important; }
+    :root[data-theme="dark"] .text-red-900,
+    :root[data-theme="dark"] .text-red-800,
+    :root[data-theme="dark"] .text-red-700 { color: #F87171 !important; }
+    :root[data-theme="dark"] button.bg-ink { background-color: #1E293B !important; border: 1px solid #334155; }
+    :root[data-theme="dark"] .pill-muted { background: #1E293B; color: #CBD5E1; }
+    :root[data-theme="dark"] .tab-btn.is-active { background: #1E293B; color: #F8FAFC; }
+    :root[data-theme="dark"] .toast { color: #F1F5F9; }
+    :root[data-theme="dark"] .toast__close:hover { color: #F8FAFC; background: #1E293B; }
     .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow-card); }
     .btn { transition: background-color .16s ease, color .16s ease, border-color .16s ease, opacity .16s ease; }
     .btn:active:not(:disabled) { opacity: .92; }
@@ -114,26 +178,39 @@
       </a>
       <nav class="hidden md:flex items-center gap-1 text-sm font-medium" aria-label="Primary">
         <button type="button" data-tab="findings" onclick="switchTab('findings')" class="topnav-btn">
-          <span data-icon="findings" data-icon-class="w-4 h-4"></span>Findings
+          <span data-icon="findings" data-icon-class="w-4 h-4"></span><span data-i18n="nav.findings">Findings</span>
         </button>
         <button type="button" data-tab="diff" onclick="switchTab('diff')" class="topnav-btn">
-          <span data-icon="diff" data-icon-class="w-4 h-4"></span>What Changed
+          <span data-icon="diff" data-icon-class="w-4 h-4"></span><span data-i18n="nav.diff">What Changed</span>
         </button>
         <button type="button" data-tab="history" onclick="switchTab('history')" class="topnav-btn">
-          <span data-icon="history" data-icon-class="w-4 h-4"></span>Scan History
+          <span data-icon="history" data-icon-class="w-4 h-4"></span><span data-i18n="nav.history">Scan History</span>
         </button>
         <button type="button" data-tab="audit" onclick="switchTab('audit')" class="topnav-btn">
-          <span data-icon="audit" data-icon-class="w-4 h-4"></span>Audit Log
+          <span data-icon="audit" data-icon-class="w-4 h-4"></span><span data-i18n="nav.audit">Audit Log</span>
         </button>
         <button type="button" data-tab="pentest" onclick="switchTab('pentest')" class="topnav-btn">
-          <span data-icon="pentest" data-icon-class="w-4 h-4"></span>Pentest Mode
+          <span data-icon="pentest" data-icon-class="w-4 h-4"></span><span data-i18n="nav.pentest">Pentest Mode</span>
         </button>
       </nav>
-      <div class="flex items-center gap-3 shrink-0">
+      <div class="flex items-center gap-2 shrink-0">
+        <button id="lang-toggle-btn" type="button" onclick="toggleLanguage()"
+          class="btn inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-[#C6CFDB] bg-white/5 border border-white/15 rounded-lg hover:text-white hover:bg-white/10 whitespace-nowrap shrink-0"
+          title="Switch language">
+          <span data-icon="globe" data-icon-class="w-3.5 h-3.5"></span>
+          <span id="lang-en-label" class="text-white">EN</span>
+          <span class="text-white/40">/</span>
+          <span id="lang-fr-label" class="text-white/50">FR</span>
+        </button>
+        <button id="theme-toggle-btn" type="button" onclick="toggleTheme()"
+          class="btn inline-flex items-center justify-center p-2 text-[#C6CFDB] bg-white/5 border border-white/15 rounded-lg hover:text-white hover:bg-white/10 shrink-0"
+          aria-label="Toggle night mode" title="Toggle night mode">
+          <span id="theme-toggle-icon" data-icon="moon" data-icon-class="w-4 h-4"></span>
+        </button>
         <button id="header-scan-btn" type="button" onclick="triggerActiveScan()" disabled
           class="btn px-4 py-2 text-xs font-semibold text-white bg-accent rounded-lg hover:bg-accent-dark disabled:bg-white/15 disabled:text-white/50 disabled:cursor-not-allowed whitespace-nowrap shrink-0">
           <span class="inline-flex items-center gap-2">
-            <span data-icon="scan" data-icon-class="w-4 h-4"></span><span>Run Scan</span>
+            <span data-icon="scan" data-icon-class="w-4 h-4"></span><span data-i18n="nav.runScan">Run Scan</span>
           </span>
         </button>
       </div>
@@ -144,27 +221,27 @@
     <!-- Left Sidebar: Domain List & Add Form -->
     <aside class="lg:col-span-4 space-y-6">
       <section class="card bg-white border border-slate-200 rounded-xl p-5">
-        <h2 class="font-display text-sm font-bold text-slate-900 mb-3">Add Monitored Domain</h2>
+        <h2 class="font-display text-sm font-bold text-slate-900 mb-3" data-i18n="domain.addTitle">Add Monitored Domain</h2>
         <form id="add-domain-form" class="space-y-3">
           <div>
-            <label for="domain-input" class="block text-xs font-medium text-slate-600 mb-1">Domain Name</label>
+            <label for="domain-input" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="domain.nameLabel">Domain Name</label>
             <input id="domain-input" type="text" required placeholder="acme-bakery.com"
               class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono" />
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label for="owner-input" class="block text-xs font-medium text-slate-600 mb-1">Owner / Team</label>
+              <label for="owner-input" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="domain.ownerLabel">Owner / Team</label>
               <input id="owner-input" type="text" value="local-owner"
                 class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent" />
             </div>
             <div>
-              <label for="interval-input" class="block text-xs font-medium text-slate-600 mb-1">Rescan (Days)</label>
+              <label for="interval-input" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="domain.rescanLabel">Rescan (Days)</label>
               <input id="interval-input" type="number" min="1" max="90" value="7"
                 class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono tabular-nums" />
             </div>
           </div>
           <button type="submit"
-            class="btn w-full py-2 px-4 bg-ink text-white text-xs font-semibold rounded-lg hover:opacity-90">
+            class="btn w-full py-2 px-4 bg-ink text-white text-xs font-semibold rounded-lg hover:opacity-90" data-i18n="domain.registerBtn">
             Register Domain
           </button>
         </form>
@@ -173,11 +250,11 @@
 
       <section class="card bg-white border border-slate-200 rounded-xl overflow-hidden">
         <div class="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between">
-          <h2 class="font-display text-sm font-bold text-slate-900">Your Domains</h2>
+          <h2 class="font-display text-sm font-bold text-slate-900" data-i18n="domain.yourDomains">Your Domains</h2>
           <span id="domain-count" class="text-xs font-mono tabular-nums text-slate-500">0</span>
         </div>
         <div id="domain-list" class="divide-y divide-slate-200">
-          <div class="p-5 text-xs text-slate-500">No domains added yet. Register a domain above to begin.</div>
+          <div class="p-5 text-xs text-slate-500" data-i18n="domain.noneAdded">No domains added yet. Register a domain above to begin.</div>
         </div>
       </section>
     </aside>
@@ -186,8 +263,8 @@
     <section class="lg:col-span-8 space-y-6">
       <!-- Empty Selection State -->
       <div id="empty-state" class="card bg-white border border-slate-200 rounded-xl p-10 text-center">
-        <h1 class="font-display text-xl font-bold text-slate-900 mb-2">Monitor Your Public Attack Surface</h1>
-        <p class="text-sm text-slate-600 max-w-lg mx-auto">
+        <h1 class="font-display text-xl font-bold text-slate-900 mb-2" data-i18n="empty.title">Monitor Your Public Attack Surface</h1>
+        <p class="text-sm text-slate-600 max-w-lg mx-auto" data-i18n="empty.desc">
           Add a domain you own on the left, verify ownership via DNS TXT or signed attestation, and run passive discovery plus non-intrusive TLS, DNS/email, port, and HTTP checks.
         </p>
       </div>
@@ -198,36 +275,36 @@
         <div id="verification-gate" class="hidden bg-amber-50 border border-amber-300 rounded-xl p-5 space-y-4">
           <div class="flex items-start justify-between gap-4">
             <div>
-              <h2 class="font-display text-base font-bold text-slate-900">Ownership Verification Required</h2>
+              <h2 class="font-display text-base font-bold text-slate-900" data-i18n="gate.title">Ownership Verification Required</h2>
               <p class="text-xs text-slate-700 mt-1">
-                Scanning is locked until you prove ownership of <strong id="gate-domain-name" class="font-mono"></strong>.
+                <span data-i18n="gate.lockedPrefix">Scanning is locked until you prove ownership of</span> <strong id="gate-domain-name" class="font-mono"></strong>.
               </p>
             </div>
-            <span class="text-xs font-semibold text-amber-900">Status: Unverified</span>
+            <span class="text-xs font-semibold text-amber-900" data-i18n="gate.statusUnverified">Status: Unverified</span>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-amber-200">
             <div class="bg-white border border-amber-200 rounded-lg p-4 space-y-2">
-              <h3 class="text-xs font-bold text-slate-900">Option A: DNS TXT Record</h3>
-              <p class="text-xs text-slate-600">Add this TXT record to your DNS provider, then verify:</p>
+              <h3 class="text-xs font-bold text-slate-900" data-i18n="gate.optA">Option A: DNS TXT Record</h3>
+              <p class="text-xs text-slate-600" data-i18n="gate.optADesc">Add this TXT record to your DNS provider, then verify:</p>
               <div class="text-xs font-mono bg-slate-50 border border-slate-200 rounded p-2 break-all">
-                <div><span class="text-slate-500">Host:</span> <span id="txt-host"></span></div>
-                <div class="mt-1"><span class="text-slate-500">Value:</span> <span id="txt-value"></span></div>
+                <div><span class="text-slate-500" data-i18n="gate.host">Host:</span> <span id="txt-host"></span></div>
+                <div class="mt-1"><span class="text-slate-500" data-i18n="gate.value">Value:</span> <span id="txt-value"></span></div>
               </div>
               <button type="button" onclick="verifyDns()"
-                class="btn w-full py-2 px-3 bg-ink text-white text-xs font-semibold rounded-lg hover:opacity-90">
+                class="btn w-full py-2 px-3 bg-ink text-white text-xs font-semibold rounded-lg hover:opacity-90" data-i18n="gate.checkDnsBtn">
                 Check DNS TXT Record
               </button>
             </div>
 
             <div class="bg-white border border-amber-200 rounded-lg p-4 space-y-3">
-              <h3 class="text-xs font-bold text-slate-900">Option B: Timestamped Authorization</h3>
+              <h3 class="text-xs font-bold text-slate-900" data-i18n="gate.optB">Option B: Timestamped Authorization</h3>
               <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
                 <input id="attest-checkbox" type="checkbox" class="mt-0.5 rounded border-line-strong text-accent focus:ring-accent" />
-                <span>I own or am authorized to test this domain. (Stored with UTC timestamp in the audit log.)</span>
+                <span data-i18n="gate.attestLabel">I own or am authorized to test this domain. (Stored with UTC timestamp in the audit log.)</span>
               </label>
               <button type="button" onclick="verifyAttestation()"
-                class="btn w-full py-2 px-3 bg-accent text-white text-xs font-semibold rounded-lg hover:bg-accent-dark">
+                class="btn w-full py-2 px-3 bg-accent text-white text-xs font-semibold rounded-lg hover:bg-accent-dark" data-i18n="gate.confirmBtn">
                 Confirm Ownership &amp; Unlock
               </button>
             </div>
@@ -248,19 +325,19 @@
             <div class="flex flex-wrap items-center gap-2">
               <button type="button" onclick="exportReport('html')"
                 class="btn inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium border border-line-strong text-slate-700 rounded-lg hover:bg-slate-50">
-                <span data-icon="download" data-icon-class="w-4 h-4"></span>Export HTML
+                <span data-icon="download" data-icon-class="w-4 h-4"></span><span data-i18n="domain.exportHtml">Export HTML</span>
               </button>
               <button type="button" onclick="exportReport('pdf')"
                 class="btn inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium border border-line-strong text-slate-700 rounded-lg hover:bg-slate-50">
-                <span data-icon="download" data-icon-class="w-4 h-4"></span>Export PDF
+                <span data-icon="download" data-icon-class="w-4 h-4"></span><span data-i18n="domain.exportPdf">Export PDF</span>
               </button>
               <button type="button" onclick="sendNotifications()"
                 class="btn inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium border border-line-strong text-slate-700 rounded-lg hover:bg-slate-50">
-                <span data-icon="file" data-icon-class="w-4 h-4"></span>Send Summary
+                <span data-icon="file" data-icon-class="w-4 h-4"></span><span data-i18n="domain.sendSummary">Send Summary</span>
               </button>
               <button type="button" onclick="deleteActiveDomain()"
                 class="btn inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium border border-red-200 text-red-700 rounded-lg hover:bg-red-50">
-                <span data-icon="trash" data-icon-class="w-4 h-4"></span>Remove
+                <span data-icon="trash" data-icon-class="w-4 h-4"></span><span data-i18n="common.remove">Remove</span>
               </button>
             </div>
           </div>
@@ -268,19 +345,19 @@
           <!-- KPI Strip -->
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4">
             <div>
-              <div class="text-xs text-slate-500">Risk Score</div>
+              <div class="text-xs text-slate-500" data-i18n="kpi.riskScore">Risk Score</div>
               <div id="kpi-risk" class="text-2xl font-bold font-mono tabular-nums text-slate-900 mt-0.5">0 / 100</div>
             </div>
             <div>
-              <div class="text-xs text-slate-500">Active Findings</div>
+              <div class="text-xs text-slate-500" data-i18n="kpi.activeFindings">Active Findings</div>
               <div id="kpi-findings" class="text-2xl font-bold font-mono tabular-nums text-slate-900 mt-0.5">0</div>
             </div>
             <div>
-              <div class="text-xs text-slate-500">New Since Last</div>
+              <div class="text-xs text-slate-500" data-i18n="kpi.newSinceLast">New Since Last</div>
               <div id="kpi-new" class="text-2xl font-bold font-mono tabular-nums text-amber-700 mt-0.5">0</div>
             </div>
             <div>
-              <div class="text-xs text-slate-500">Resolved Issues</div>
+              <div class="text-xs text-slate-500" data-i18n="kpi.resolvedIssues">Resolved Issues</div>
               <div id="kpi-resolved" class="text-2xl font-bold font-mono tabular-nums text-emerald-700 mt-0.5">0</div>
             </div>
           </div>
@@ -290,13 +367,13 @@
             <div class="flex items-center gap-4">
               <label class="flex items-center gap-2 font-medium text-slate-700 cursor-pointer">
                 <input id="schedule-enabled" type="checkbox" onchange="saveSchedule()" class="rounded border-line-strong text-accent" />
-                <span>Automatic Rescan</span>
+                <span data-i18n="schedule.autoRescan">Automatic Rescan</span>
               </label>
               <div class="flex items-center gap-2">
-                <span class="text-slate-500">Every</span>
+                <span class="text-slate-500" data-i18n="schedule.every">Every</span>
                 <input id="schedule-days" type="number" min="1" max="90" value="7" onchange="saveSchedule()"
                   class="w-16 px-2 py-1 border border-line-strong rounded font-mono tabular-nums text-xs" />
-                <span class="text-slate-500">days</span>
+                <span class="text-slate-500" data-i18n="schedule.days">days</span>
               </div>
             </div>
             <span id="action-feedback" class="text-xs text-slate-600"></span>
@@ -305,32 +382,32 @@
 
         <!-- Tabs -->
         <div class="flex items-center gap-1 p-1 bg-[#EEF1F5] border border-line rounded-lg w-fit">
-          <button type="button" data-tab="findings" onclick="switchTab('findings')" class="tab-btn is-active">Findings</button>
-          <button type="button" data-tab="diff" onclick="switchTab('diff')" class="tab-btn">What Changed</button>
-          <button type="button" data-tab="history" onclick="switchTab('history')" class="tab-btn">Scan History</button>
-          <button type="button" data-tab="audit" onclick="switchTab('audit')" class="tab-btn">Audit Log</button>
+          <button type="button" data-tab="findings" onclick="switchTab('findings')" class="tab-btn is-active" data-i18n="nav.findings">Findings</button>
+          <button type="button" data-tab="diff" onclick="switchTab('diff')" class="tab-btn" data-i18n="nav.diff">What Changed</button>
+          <button type="button" data-tab="history" onclick="switchTab('history')" class="tab-btn" data-i18n="nav.history">Scan History</button>
+          <button type="button" data-tab="audit" onclick="switchTab('audit')" class="tab-btn" data-i18n="nav.audit">Audit Log</button>
         </div>
 
         <!-- Tab 1: Findings -->
         <div id="tab-findings" class="card bg-white border border-slate-200 rounded-xl overflow-hidden">
           <div class="p-4 border-b border-slate-200 flex flex-wrap items-center gap-3">
-            <input id="filter-search" type="text" placeholder="Filter by title, host, or evidence..." oninput="renderFindings()"
+            <input id="filter-search" type="text" placeholder="Filter by title, host, or evidence..." data-i18n-placeholder="filter.searchPlaceholder" oninput="renderFindings()"
               class="flex-1 min-w-[200px] px-3 py-1.5 text-xs border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent" />
             <select id="filter-severity" onchange="renderFindings()" class="px-3 py-1.5 text-xs border border-line-strong rounded-lg bg-white">
-              <option value="">All Severities</option>
-              <option value="critical">Critical</option>
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
-              <option value="info">Info</option>
+              <option value="" data-i18n="filter.allSeverities">All Severities</option>
+              <option value="critical" data-i18n="sev.critical">Critical</option>
+              <option value="high" data-i18n="sev.high">High</option>
+              <option value="medium" data-i18n="sev.medium">Medium</option>
+              <option value="low" data-i18n="sev.low">Low</option>
+              <option value="info" data-i18n="sev.info">Info</option>
             </select>
             <select id="filter-scanner" onchange="renderFindings()" class="px-3 py-1.5 text-xs border border-line-strong rounded-lg bg-white">
-              <option value="">All Scanners</option>
-              <option value="subdomain">Subdomains</option>
-              <option value="dns_email">DNS &amp; Email</option>
-              <option value="tls">TLS</option>
-              <option value="port_check">Ports</option>
-              <option value="http_exposure">HTTP</option>
+              <option value="" data-i18n="filter.allScanners">All Scanners</option>
+              <option value="subdomain" data-i18n="scanner.subdomain">Subdomains</option>
+              <option value="dns_email" data-i18n="scanner.dns_email">DNS &amp; Email</option>
+              <option value="tls" data-i18n="scanner.tls">TLS</option>
+              <option value="port_check" data-i18n="scanner.port_check">Ports</option>
+              <option value="http_exposure" data-i18n="scanner.http_exposure">HTTP</option>
             </select>
           </div>
           <div id="findings-container" class="divide-y divide-slate-200"></div>
@@ -354,61 +431,61 @@
       <section class="card p-5">
         <div class="flex items-center gap-2 mb-3">
           <span data-icon="shield" data-icon-class="w-4 h-4 text-accent"></span>
-          <h2 class="font-display text-sm font-bold text-slate-900">New Engagement</h2>
+          <h2 class="font-display text-sm font-bold text-slate-900" data-i18n="pentest.newEngagement">New Engagement</h2>
         </div>
         <form id="engagement-form" class="space-y-3">
           <div>
-            <label for="eng-client" class="block text-xs font-medium text-slate-600 mb-1">Client Name</label>
+            <label for="eng-client" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="pentest.clientName">Client Name</label>
             <input id="eng-client" type="text" required placeholder="Acme Bakery"
               class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent" />
           </div>
           <div>
-            <label for="eng-auth-ref" class="block text-xs font-medium text-slate-600 mb-1">Authorization Reference</label>
-            <input id="eng-auth-ref" type="text" required placeholder="SOW-2026-014 / signed ROE"
+            <label for="eng-auth-ref" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="pentest.authRef">Authorization Reference</label>
+            <input id="eng-auth-ref" type="text" required placeholder="SOW-2026-014 / signed ROE" data-i18n-placeholder="pentest.authRefPlaceholder"
               class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent" />
           </div>
           <div>
-            <label for="eng-scope" class="block text-xs font-medium text-slate-600 mb-1">Website URL(s) / Scope</label>
+            <label for="eng-scope" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="pentest.scopeLabel">Website URL(s) / Scope</label>
             <textarea id="eng-scope" rows="3" required placeholder="https://acme-bakery.com"
               class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono"></textarea>
-            <p class="text-[11px] text-slate-400 mt-1">Paste a website URL (e.g. https://acme-bakery.com) and the host is extracted automatically. Domains, wildcards, and CIDR networks still work. One per line.</p>
+            <p class="text-[11px] text-slate-400 mt-1" data-i18n="pentest.scopeHint">Paste a website URL (e.g. https://acme-bakery.com) and the host is extracted automatically. Domains, wildcards, and CIDR networks still work. One per line.</p>
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label for="eng-start-date" class="block text-xs font-medium text-slate-600 mb-1">Start</label>
+              <label for="eng-start-date" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="pentest.startDate">Start</label>
               <input id="eng-start-date" type="date" required
                 class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono" />
             </div>
             <div>
-              <label for="eng-end-date" class="block text-xs font-medium text-slate-600 mb-1">End</label>
+              <label for="eng-end-date" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="pentest.endDate">End</label>
               <input id="eng-end-date" type="date" required
                 class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono" />
             </div>
           </div>
           <div>
-            <label for="eng-tester" class="block text-xs font-medium text-slate-600 mb-1">Tester</label>
+            <label for="eng-tester" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="pentest.tester">Tester</label>
             <input id="eng-tester" type="text" value="local-owner"
               class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent" />
           </div>
           <div>
-            <label for="eng-notes" class="block text-xs font-medium text-slate-600 mb-1">Notes</label>
-            <textarea id="eng-notes" rows="2" placeholder="Rules of engagement, contacts, constraints..."
+            <label for="eng-notes" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="pentest.notes">Notes</label>
+            <textarea id="eng-notes" rows="2" placeholder="Rules of engagement, contacts, constraints..." data-i18n-placeholder="pentest.notesPlaceholder"
               class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent"></textarea>
           </div>
           <button id="create-engagement-btn" type="submit"
             class="btn w-full inline-flex items-center justify-center gap-2 py-2 px-4 bg-ink text-white text-xs font-semibold rounded-lg hover:opacity-90">
-            <span data-icon="plus" data-icon-class="w-4 h-4"></span>Create Engagement
+            <span data-icon="plus" data-icon-class="w-4 h-4"></span><span data-i18n="pentest.createBtn">Create Engagement</span>
           </button>
         </form>
       </section>
 
       <section class="card overflow-hidden">
         <div class="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between">
-          <h2 class="font-display text-sm font-bold text-slate-900">Engagements</h2>
+          <h2 class="font-display text-sm font-bold text-slate-900" data-i18n="pentest.engagements">Engagements</h2>
           <span id="engagement-count" class="text-xs font-mono tabular-nums text-slate-500">0</span>
         </div>
         <div id="engagement-list" class="divide-y divide-slate-200 scroll-thin max-h-[32rem] overflow-y-auto">
-          <div class="p-5 text-xs text-slate-500">No engagements yet. Create one above to begin.</div>
+          <div class="p-5 text-xs text-slate-500" data-i18n="pentest.noneYet">No engagements yet. Create one above to begin.</div>
         </div>
       </section>
     </aside>
@@ -418,8 +495,8 @@
         <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-accent-dark">
           <span data-icon="target" data-icon-class="w-6 h-6"></span>
         </div>
-        <h1 class="font-display text-xl font-bold text-slate-900 mb-2">Authorized Pentest Workspace</h1>
-        <p class="text-sm text-slate-600 max-w-lg mx-auto">
+        <h1 class="font-display text-xl font-bold text-slate-900 mb-2" data-i18n="pentest.emptyTitle">Authorized Pentest Workspace</h1>
+        <p class="text-sm text-slate-600 max-w-lg mx-auto" data-i18n="pentest.emptyDesc">
           Create or select an engagement to run scoped nmap/nuclei scans, record manual findings with screenshots, track retests, and export a VAPT report.
         </p>
       </div>
@@ -449,35 +526,35 @@
               </button>
               <button type="button" onclick="deleteActiveEngagement()"
                 class="btn inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium border border-red-200 text-red-700 rounded-lg hover:bg-red-50">
-                <span data-icon="trash" data-icon-class="w-4 h-4"></span>Remove
+                <span data-icon="trash" data-icon-class="w-4 h-4"></span><span data-i18n="common.remove">Remove</span>
               </button>
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
             <div>
-              <div class="text-xs text-slate-500">Findings</div>
+              <div class="text-xs text-slate-500" data-i18n="nav.findings">Findings</div>
               <div id="eng-finding-count" class="text-2xl font-bold font-mono tabular-nums text-slate-900 mt-0.5">0</div>
             </div>
             <div>
-              <div class="text-xs text-slate-500">Risk Grade</div>
+              <div class="text-xs text-slate-500" data-i18n="pentest.riskGrade">Risk Grade</div>
               <div id="eng-risk-grade" class="text-2xl font-bold text-slate-900 mt-0.5">Low</div>
             </div>
             <div>
-              <div class="text-xs text-slate-500">Test Window</div>
+              <div class="text-xs text-slate-500" data-i18n="pentest.testWindow">Test Window</div>
               <div id="eng-window" class="text-sm font-semibold font-mono tabular-nums text-slate-800 mt-1.5"></div>
             </div>
           </div>
           <div class="mt-4 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
             <div class="flex flex-wrap items-center gap-2">
-              <label for="eng-status-select" class="text-xs font-medium text-slate-600">Engagement Status</label>
+              <label for="eng-status-select" class="text-xs font-medium text-slate-600" data-i18n="pentest.statusLabel">Engagement Status</label>
               <select id="eng-status-select" class="px-3 py-1.5 text-xs border border-line-strong rounded-lg bg-white">
-                <option value="active">Active</option>
-                <option value="on_hold">On Hold</option>
-                <option value="completed">Completed</option>
-                <option value="archived">Archived</option>
+                <option value="active" data-i18n="status.active">Active</option>
+                <option value="on_hold" data-i18n="status.on_hold">On Hold</option>
+                <option value="completed" data-i18n="status.completed">Completed</option>
+                <option value="archived" data-i18n="status.archived">Archived</option>
               </select>
               <button type="button" onclick="updateEngagementStatus(this)"
-                class="btn px-3 py-1.5 text-xs font-semibold bg-accent text-white rounded-lg hover:bg-accent-dark">Update</button>
+                class="btn px-3 py-1.5 text-xs font-semibold bg-accent text-white rounded-lg hover:bg-accent-dark" data-i18n="common.update">Update</button>
             </div>
             <span id="eng-created" class="text-[11px] text-slate-400 font-mono"></span>
           </div>
@@ -486,7 +563,7 @@
         <div class="card p-5">
           <div class="flex items-center gap-2 mb-2">
             <span data-icon="shield" data-icon-class="w-4 h-4 text-slate-500"></span>
-            <h2 class="font-display text-sm font-bold text-slate-900">Authorized Scope</h2>
+            <h2 class="font-display text-sm font-bold text-slate-900" data-i18n="pentest.authorizedScope">Authorized Scope</h2>
           </div>
           <div id="eng-scope" class="flex flex-wrap gap-2"></div>
           <p id="eng-notes" class="text-xs text-slate-600 mt-3"></p>
@@ -496,18 +573,18 @@
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center gap-2">
               <span data-icon="scan" data-icon-class="w-4 h-4 text-accent"></span>
-              <h2 class="font-display text-sm font-bold text-slate-900">Active Scan</h2>
+              <h2 class="font-display text-sm font-bold text-slate-900" data-i18n="pentest.activeScan">Active Scan</h2>
             </div>
             <span id="scan-window-warning" class="hidden"></span>
           </div>
           <form id="active-scan-form" class="grid grid-cols-1 md:grid-cols-12 gap-3 md:items-end">
             <div class="md:col-span-6">
-              <label for="scan-target" class="block text-xs font-medium text-slate-600 mb-1">Target URL / host (must be in scope)</label>
+              <label for="scan-target" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="pentest.scanTargetLabel">Target URL / host (must be in scope)</label>
               <input id="scan-target" type="text" required placeholder="acme-bakery.com"
                 class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono" />
             </div>
             <div class="md:col-span-3">
-              <label for="scan-tool" class="block text-xs font-medium text-slate-600 mb-1">Tool</label>
+              <label for="scan-tool" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="pentest.toolLabel">Tool</label>
               <select id="scan-tool" class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg bg-white">
                 <option value="nmap">nmap</option>
                 <option value="nuclei">nuclei</option>
@@ -516,11 +593,11 @@
             <div class="md:col-span-3">
               <button id="engagement-scan-btn" type="submit"
                 class="btn w-full inline-flex items-center justify-center gap-2 py-2 px-4 bg-accent text-white text-xs font-semibold rounded-lg hover:bg-accent-dark disabled:bg-line-strong disabled:cursor-not-allowed">
-                <span data-icon="scan" data-icon-class="w-4 h-4"></span>Run Scoped Scan
+                <span data-icon="scan" data-icon-class="w-4 h-4"></span><span data-i18n="pentest.runScopedScan">Run Scoped Scan</span>
               </button>
             </div>
           </form>
-          <p class="text-[11px] text-slate-400">Scans run only while the engagement status is Active and today is within the authorized window. Out-of-scope targets are rejected by the API.</p>
+          <p class="text-[11px] text-slate-400" data-i18n="pentest.scanRule">Scans run only while the engagement status is Active and today is within the authorized window. Out-of-scope targets are rejected by the API.</p>
           <div id="scan-result" class="hidden"></div>
         </div>
 
@@ -528,78 +605,78 @@
           <div class="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between gap-2">
             <div class="flex items-center gap-2">
               <span data-icon="findings" data-icon-class="w-4 h-4 text-slate-500"></span>
-              <h2 class="font-display text-sm font-bold text-slate-900">Manual Findings</h2>
+              <h2 class="font-display text-sm font-bold text-slate-900" data-i18n="pentest.manualFindings">Manual Findings</h2>
             </div>
             <span id="manual-count" class="text-xs font-mono tabular-nums text-slate-500">0</span>
           </div>
           <details id="manual-finding-details" class="group border-b border-slate-200">
             <summary class="list-none cursor-pointer px-5 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors">
               <span class="inline-flex items-center gap-2 text-sm font-semibold text-slate-800">
-                <span data-icon="plus" data-icon-class="w-4 h-4 text-accent"></span>Add Manual Finding
+                <span data-icon="plus" data-icon-class="w-4 h-4 text-accent"></span><span data-i18n="pentest.addManualFinding">Add Manual Finding</span>
               </span>
-              <span class="text-xs text-slate-400 group-open:hidden">Expand</span>
+              <span class="text-xs text-slate-400 group-open:hidden" data-i18n="common.expand">Expand</span>
             </summary>
             <form id="manual-finding-form" class="px-5 pb-5 pt-1 space-y-3">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div class="md:col-span-2">
-                  <label for="mf-title" class="block text-xs font-medium text-slate-600 mb-1">Title</label>
-                  <input id="mf-title" type="text" required placeholder="Reflected XSS in search parameter"
+                  <label for="mf-title" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="mf.title">Title</label>
+                  <input id="mf-title" type="text" required placeholder="Reflected XSS in search parameter" data-i18n-placeholder="mf.titlePlaceholder"
                     class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent" />
                 </div>
                 <div>
-                  <label for="mf-host" class="block text-xs font-medium text-slate-600 mb-1">Affected Host</label>
+                  <label for="mf-host" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="mf.host">Affected Host</label>
                   <input id="mf-host" type="text" required placeholder="shop.acme-bakery.com"
                     class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono" />
                 </div>
                 <div>
-                  <label for="mf-severity" class="block text-xs font-medium text-slate-600 mb-1">Severity</label>
+                  <label for="mf-severity" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="mf.severity">Severity</label>
                   <select id="mf-severity" class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg bg-white">
-                    <option value="critical">Critical</option>
-                    <option value="high">High</option>
-                    <option value="medium" selected>Medium</option>
-                    <option value="low">Low</option>
-                    <option value="info">Info</option>
+                    <option value="critical" data-i18n="sev.critical">Critical</option>
+                    <option value="high" data-i18n="sev.high">High</option>
+                    <option value="medium" selected data-i18n="sev.medium">Medium</option>
+                    <option value="low" data-i18n="sev.low">Low</option>
+                    <option value="info" data-i18n="sev.info">Info</option>
                   </select>
                 </div>
                 <div>
-                  <label for="mf-cvss" class="block text-xs font-medium text-slate-600 mb-1">CVSS Score</label>
+                  <label for="mf-cvss" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="mf.cvss">CVSS Score</label>
                   <input id="mf-cvss" type="number" step="0.1" min="0" max="10" placeholder="7.5"
                     class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono" />
                 </div>
                 <div>
-                  <label for="mf-owasp" class="block text-xs font-medium text-slate-600 mb-1">OWASP Category</label>
+                  <label for="mf-owasp" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="mf.owasp">OWASP Category</label>
                   <input id="mf-owasp" type="text" placeholder="A03:2021"
                     class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent" />
                 </div>
                 <div class="md:col-span-2">
-                  <label for="mf-cvss-vector" class="block text-xs font-medium text-slate-600 mb-1">CVSS Vector</label>
+                  <label for="mf-cvss-vector" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="mf.cvssVector">CVSS Vector</label>
                   <input id="mf-cvss-vector" type="text" placeholder="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
                     class="w-full px-3 py-2 text-xs border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono" />
                 </div>
                 <div class="md:col-span-2">
-                  <label for="mf-description" class="block text-xs font-medium text-slate-600 mb-1">Description</label>
+                  <label for="mf-description" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="mf.description">Description</label>
                   <textarea id="mf-description" rows="2"
                     class="w-full px-3 py-2 text-xs border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent"></textarea>
                 </div>
                 <div class="md:col-span-2">
-                  <label for="mf-evidence" class="block text-xs font-medium text-slate-600 mb-1">Evidence</label>
+                  <label for="mf-evidence" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="mf.evidence">Evidence</label>
                   <textarea id="mf-evidence" rows="2"
                     class="w-full px-3 py-2 text-xs border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent font-mono"></textarea>
                 </div>
                 <div class="md:col-span-2">
-                  <label for="mf-remediation" class="block text-xs font-medium text-slate-600 mb-1">Remediation</label>
+                  <label for="mf-remediation" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="mf.remediation">Remediation</label>
                   <textarea id="mf-remediation" rows="2"
                     class="w-full px-3 py-2 text-xs border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent"></textarea>
                 </div>
                 <div>
-                  <label for="mf-discovered-by" class="block text-xs font-medium text-slate-600 mb-1">Discovered By</label>
+                  <label for="mf-discovered-by" class="block text-xs font-medium text-slate-600 mb-1" data-i18n="mf.discoveredBy">Discovered By</label>
                   <input id="mf-discovered-by" type="text" value="local-owner"
                     class="w-full px-3 py-2 text-sm border border-line-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent" />
                 </div>
                 <div class="flex items-end">
                   <button id="save-manual-btn" type="submit"
                     class="btn w-full inline-flex items-center justify-center gap-2 py-2 px-4 bg-ink text-white text-xs font-semibold rounded-lg hover:opacity-90">
-                    <span data-icon="plus" data-icon-class="w-4 h-4"></span>Save Manual Finding
+                    <span data-icon="plus" data-icon-class="w-4 h-4"></span><span data-i18n="mf.saveBtn">Save Manual Finding</span>
                   </button>
                 </div>
               </div>
@@ -630,7 +707,451 @@
       scanResult: null,
       scanRunning: false,
       screenshotUrls: {},
+      theme: localStorage.getItem('sw_theme') === 'dark' ? 'dark' : 'light',
+      lang: localStorage.getItem('sw_lang') === 'fr' ? 'fr' : 'en',
     };
+
+    const I18N = {
+      en: {
+        'nav.findings': 'Findings',
+        'nav.diff': 'What Changed',
+        'nav.history': 'Scan History',
+        'nav.audit': 'Audit Log',
+        'nav.pentest': 'Pentest Mode',
+        'nav.runScan': 'Run Scan',
+        'theme.toDark': 'Switch to night mode',
+        'theme.toLight': 'Switch to light mode',
+        'lang.switch': 'Switch language (EN / FR)',
+        'domain.addTitle': 'Add Monitored Domain',
+        'domain.nameLabel': 'Domain Name',
+        'domain.ownerLabel': 'Owner / Team',
+        'domain.rescanLabel': 'Rescan (Days)',
+        'domain.registerBtn': 'Register Domain',
+        'domain.yourDomains': 'Your Domains',
+        'domain.noneAdded': 'No domains added yet. Register a domain above to begin.',
+        'domain.exportHtml': 'Export HTML',
+        'domain.exportPdf': 'Export PDF',
+        'domain.sendSummary': 'Send Summary',
+        'common.remove': 'Remove',
+        'common.update': 'Update',
+        'common.expand': 'Expand',
+        'common.none': 'None',
+        'common.never': 'Never',
+        'common.working': 'Working...',
+        'common.scanning': 'Scanning...',
+        'common.creating': 'Creating...',
+        'common.saving': 'Saving...',
+        'common.updating': 'Updating...',
+        'empty.title': 'Monitor Your Public Attack Surface',
+        'empty.desc': 'Add a domain you own on the left, verify ownership via DNS TXT or signed attestation, and run passive discovery plus non-intrusive TLS, DNS/email, port, and HTTP checks.',
+        'gate.title': 'Ownership Verification Required',
+        'gate.lockedPrefix': 'Scanning is locked until you prove ownership of',
+        'gate.statusUnverified': 'Status: Unverified',
+        'gate.optA': 'Option A: DNS TXT Record',
+        'gate.optADesc': 'Add this TXT record to your DNS provider, then verify:',
+        'gate.host': 'Host:',
+        'gate.value': 'Value:',
+        'gate.checkDnsBtn': 'Check DNS TXT Record',
+        'gate.optB': 'Option B: Timestamped Authorization',
+        'gate.attestLabel': 'I own or am authorized to test this domain. (Stored with UTC timestamp in the audit log.)',
+        'gate.confirmBtn': 'Confirm Ownership & Unlock',
+        'kpi.riskScore': 'Risk Score',
+        'kpi.activeFindings': 'Active Findings',
+        'kpi.newSinceLast': 'New Since Last',
+        'kpi.resolvedIssues': 'Resolved Issues',
+        'schedule.autoRescan': 'Automatic Rescan',
+        'schedule.every': 'Every',
+        'schedule.days': 'days',
+        'filter.searchPlaceholder': 'Filter by title, host, or evidence...',
+        'filter.allSeverities': 'All Severities',
+        'filter.allScanners': 'All Scanners',
+        'sev.critical': 'Critical',
+        'sev.high': 'High',
+        'sev.medium': 'Medium',
+        'sev.low': 'Low',
+        'sev.info': 'Info',
+        'scanner.subdomain': 'Subdomains',
+        'scanner.dns_email': 'DNS & Email',
+        'scanner.tls': 'TLS',
+        'scanner.port_check': 'Ports',
+        'scanner.http_exposure': 'HTTP',
+        'status.active': 'Active',
+        'status.on_hold': 'On Hold',
+        'status.paused': 'Paused',
+        'status.completed': 'Completed',
+        'status.archived': 'Archived',
+        'status.open': 'Open',
+        'status.remediated': 'Remediated',
+        'status.accepted_risk': 'Accepted risk',
+        'status.false_positive': 'False positive',
+        'status.retested': 'Retested',
+        'pentest.newEngagement': 'New Engagement',
+        'pentest.clientName': 'Client Name',
+        'pentest.authRef': 'Authorization Reference',
+        'pentest.authRefPlaceholder': 'SOW-2026-014 / signed ROE',
+        'pentest.scopeLabel': 'Website URL(s) / Scope',
+        'pentest.scopeHint': 'Paste a website URL (e.g. https://acme-bakery.com) and the host is extracted automatically. Domains, wildcards, and CIDR networks still work. One per line.',
+        'pentest.startDate': 'Start',
+        'pentest.endDate': 'End',
+        'pentest.tester': 'Tester',
+        'pentest.notes': 'Notes',
+        'pentest.notesPlaceholder': 'Rules of engagement, contacts, constraints...',
+        'pentest.createBtn': 'Create Engagement',
+        'pentest.engagements': 'Engagements',
+        'pentest.noneYet': 'No engagements yet. Create one above to begin.',
+        'pentest.emptyTitle': 'Authorized Pentest Workspace',
+        'pentest.emptyDesc': 'Create or select an engagement to run scoped nmap/nuclei scans, record manual findings with screenshots, track retests, and export a VAPT report.',
+        'pentest.riskGrade': 'Risk Grade',
+        'pentest.testWindow': 'Test Window',
+        'pentest.statusLabel': 'Engagement Status',
+        'pentest.authorizedScope': 'Authorized Scope',
+        'pentest.activeScan': 'Active Scan',
+        'pentest.scanTargetLabel': 'Target URL / host (must be in scope)',
+        'pentest.toolLabel': 'Tool',
+        'pentest.runScopedScan': 'Run Scoped Scan',
+        'pentest.scanRule': 'Scans run only while the engagement status is Active and today is within the authorized window. Out-of-scope targets are rejected by the API.',
+        'pentest.manualFindings': 'Manual Findings',
+        'pentest.addManualFinding': 'Add Manual Finding',
+        'mf.title': 'Title',
+        'mf.titlePlaceholder': 'Reflected XSS in search parameter',
+        'mf.host': 'Affected Host',
+        'mf.severity': 'Severity',
+        'mf.cvss': 'CVSS Score',
+        'mf.owasp': 'OWASP Category',
+        'mf.cvssVector': 'CVSS Vector',
+        'mf.description': 'Description',
+        'mf.evidence': 'Evidence',
+        'mf.remediation': 'Remediation',
+        'mf.discoveredBy': 'Discovered By',
+        'mf.saveBtn': 'Save Manual Finding',
+        'dyn.verified': 'Verified',
+        'dyn.unverified': 'Unverified',
+        'dyn.verifiedMethod': 'Verified ({method})',
+        'dyn.unverifiedLocked': 'Unverified — Scanning Locked',
+        'dyn.attested': 'Attested',
+        'dyn.ownerMeta': 'Owner: {owner} · Last Scan: {date}',
+        'dyn.scansCount': '{n} scan(s)',
+        'dyn.findingsCount': '{n} finding(s)',
+        'dyn.riskSuffix': '{grade} risk',
+        'dyn.whyMatters': 'Why it matters:',
+        'dyn.evidence': 'Evidence:',
+        'dyn.remediation': 'Remediation:',
+        'dyn.description': 'Description:',
+        'dyn.retestNotes': 'Retest notes:',
+        'dyn.retestNotesPlaceholder': 'Retest notes',
+        'dyn.attachScreenshot': 'Attach Screenshot',
+        'dyn.screenshots': 'Screenshots ({n})',
+        'dyn.persistedHint': 'Persisted evidence paths are not served by the API; only screenshots uploaded in this session can be previewed.',
+        'dyn.by': 'by {actor}',
+        'dyn.noFindings': 'No findings match the current view. Run a scan after verifying ownership.',
+        'dyn.diffEmpty': 'Run at least one scan to see changes over time.',
+        'dyn.diffNew': 'New Findings Since Previous Scan',
+        'dyn.diffResolved': 'Resolved Findings',
+        'dyn.diffUnchanged': 'Unchanged Findings',
+        'dyn.historyEmpty': 'No scans have been executed for this domain yet.',
+        'dyn.thScan': 'Scan',
+        'dyn.thStarted': 'Started',
+        'dyn.thTrigger': 'Trigger',
+        'dyn.thHosts': 'Hosts',
+        'dyn.thRiskScore': 'Risk Score',
+        'dyn.auditEmpty': 'No audit events recorded yet.',
+        'dyn.thTimestamp': 'Timestamp',
+        'dyn.thActor': 'Actor',
+        'dyn.thAction': 'Action',
+        'dyn.thDomain': 'Domain',
+        'dyn.thDetails': 'Details',
+        'dyn.noManualFindings': 'No manual findings yet. Use "Add Manual Finding" above to record a validated issue.',
+        'dyn.noScope': 'No scope entries.',
+        'dyn.createdAt': 'Created {date}',
+        'dyn.authMeta': 'Authorization: {ref} · Tester: {tester}',
+        'dyn.notesPrefix': 'Notes: {notes}',
+        'dyn.scanBlockedTitle': 'Scan blocked by scope enforcement',
+        'dyn.targetRejected': 'Target rejected.',
+        'dyn.scanFinished': 'Scan finished.',
+        'dyn.toolAvailable': 'Tool available',
+        'dyn.fallbackRecorded': 'Fallback recorded',
+        'dyn.command': 'Command',
+        'dyn.statusRequiresActive': 'Status is "{status}" — scans require Active',
+        'dyn.windowOpens': 'Authorized window opens {date}',
+        'dyn.windowClosed': 'Authorized window closed {date}',
+        'toast.scanRunning': 'Running passive discovery and safe checks...',
+        'toast.scanFeedback': 'Running passive discovery and non-intrusive checks...',
+        'toast.scanDone': 'Scan completed successfully.',
+        'toast.scheduleUpdated': 'Schedule updated.',
+        'toast.summarySent': 'Summary sent.',
+        'toast.domainRemoved': 'Domain removed.',
+        'toast.addScope': 'Add at least one authorized scope entry.',
+        'toast.engCreated': 'Engagement created.',
+        'toast.enterTarget': 'Enter a target host or URL.',
+        'toast.scanCompleted': 'Scan completed.',
+        'toast.manualSaved': 'Manual finding saved.',
+        'toast.invalidImg': 'Only PNG, JPG, GIF or WEBP screenshots are allowed.',
+        'toast.imgTooLarge': 'Screenshot exceeds the 10MB limit.',
+        'toast.imgAttached': 'Screenshot attached.',
+        'toast.retestUpdated': 'Retest status updated.',
+        'toast.engStatusUpdated': 'Engagement status updated.',
+        'toast.preparingReport': 'Preparing {format} report...',
+        'toast.engRemoved': 'Engagement removed.',
+      },
+      fr: {
+        'nav.findings': 'Vulnérabilités',
+        'nav.diff': 'Changements',
+        'nav.history': 'Historique',
+        'nav.audit': 'Journal d’audit',
+        'nav.pentest': 'Mode Pentest',
+        'nav.runScan': 'Lancer le scan',
+        'theme.toDark': 'Activer le mode nuit',
+        'theme.toLight': 'Activer le mode jour',
+        'lang.switch': 'Changer de langue (EN / FR)',
+        'domain.addTitle': 'Ajouter un domaine suivi',
+        'domain.nameLabel': 'Nom de domaine',
+        'domain.ownerLabel': 'Propriétaire / Équipe',
+        'domain.rescanLabel': 'Fréquence (jours)',
+        'domain.registerBtn': 'Enregistrer le domaine',
+        'domain.yourDomains': 'Vos domaines',
+        'domain.noneAdded': 'Aucun domaine ajouté. Enregistrez un domaine ci-dessus pour commencer.',
+        'domain.exportHtml': 'Exporter HTML',
+        'domain.exportPdf': 'Exporter PDF',
+        'domain.sendSummary': 'Envoyer le résumé',
+        'common.remove': 'Supprimer',
+        'common.update': 'Mettre à jour',
+        'common.expand': 'Déplier',
+        'common.none': 'Aucun',
+        'common.never': 'Jamais',
+        'common.working': 'En cours...',
+        'common.scanning': 'Analyse...',
+        'common.creating': 'Création...',
+        'common.saving': 'Enregistrement...',
+        'common.updating': 'Mise à jour...',
+        'empty.title': 'Surveillez votre surface d’attaque publique',
+        'empty.desc': 'Ajoutez un domaine que vous possédez à gauche, vérifiez la propriété par DNS TXT ou attestation signée, puis lancez une découverte passive et des contrôles non intrusifs (TLS, DNS/e-mail, ports, HTTP).',
+        'gate.title': 'Vérification de propriété requise',
+        'gate.lockedPrefix': 'L’analyse est verrouillée tant que vous ne prouvez pas la propriété de',
+        'gate.statusUnverified': 'Statut : Non vérifié',
+        'gate.optA': 'Option A : Enregistrement DNS TXT',
+        'gate.optADesc': 'Ajoutez cet enregistrement TXT chez votre fournisseur DNS, puis vérifiez :',
+        'gate.host': 'Hôte :',
+        'gate.value': 'Valeur :',
+        'gate.checkDnsBtn': 'Vérifier le DNS TXT',
+        'gate.optB': 'Option B : Autorisation horodatée',
+        'gate.attestLabel': 'Je possède ou suis autorisé à tester ce domaine. (Enregistré avec horodatage UTC dans le journal d’audit.)',
+        'gate.confirmBtn': 'Confirmer et déverrouiller',
+        'kpi.riskScore': 'Score de risque',
+        'kpi.activeFindings': 'Vulnérabilités actives',
+        'kpi.newSinceLast': 'Nouvelles depuis le dernier',
+        'kpi.resolvedIssues': 'Problèmes résolus',
+        'schedule.autoRescan': 'Analyse automatique',
+        'schedule.every': 'Tous les',
+        'schedule.days': 'jours',
+        'filter.searchPlaceholder': 'Filtrer par titre, hôte ou preuve...',
+        'filter.allSeverities': 'Toutes les sévérités',
+        'filter.allScanners': 'Tous les scanners',
+        'sev.critical': 'Critique',
+        'sev.high': 'Élevée',
+        'sev.medium': 'Moyenne',
+        'sev.low': 'Faible',
+        'sev.info': 'Info',
+        'scanner.subdomain': 'Sous-domaines',
+        'scanner.dns_email': 'DNS & E-mail',
+        'scanner.tls': 'TLS',
+        'scanner.port_check': 'Ports',
+        'scanner.http_exposure': 'HTTP',
+        'status.active': 'Actif',
+        'status.on_hold': 'En pause',
+        'status.paused': 'En pause',
+        'status.completed': 'Terminé',
+        'status.archived': 'Archivé',
+        'status.open': 'Ouvert',
+        'status.remediated': 'Corrigé',
+        'status.accepted_risk': 'Risque accepté',
+        'status.false_positive': 'Faux positif',
+        'status.retested': 'Retesté',
+        'pentest.newEngagement': 'Nouvelle mission',
+        'pentest.clientName': 'Nom du client',
+        'pentest.authRef': 'Référence d’autorisation',
+        'pentest.authRefPlaceholder': 'SOW-2026-014 / ROE signé',
+        'pentest.scopeLabel': 'URL(s) / Périmètre',
+        'pentest.scopeHint': 'Collez une URL (ex. https://acme-bakery.com), l’hôte est extrait automatiquement. Les domaines, jokers et réseaux CIDR fonctionnent aussi. Un par ligne.',
+        'pentest.startDate': 'Début',
+        'pentest.endDate': 'Fin',
+        'pentest.tester': 'Testeur',
+        'pentest.notes': 'Notes',
+        'pentest.notesPlaceholder': 'Règles d’engagement, contacts, contraintes...',
+        'pentest.createBtn': 'Créer la mission',
+        'pentest.engagements': 'Missions',
+        'pentest.noneYet': 'Aucune mission. Créez-en une ci-dessus pour commencer.',
+        'pentest.emptyTitle': 'Espace Pentest Autorisé',
+        'pentest.emptyDesc': 'Créez ou sélectionnez une mission pour lancer des scans nmap/nuclei ciblés, enregistrer des constats manuels avec captures, suivre les retests et exporter un rapport VAPT.',
+        'pentest.riskGrade': 'Niveau de risque',
+        'pentest.testWindow': 'Période de test',
+        'pentest.statusLabel': 'Statut de la mission',
+        'pentest.authorizedScope': 'Périmètre autorisé',
+        'pentest.activeScan': 'Scan actif',
+        'pentest.scanTargetLabel': 'URL / hôte cible (dans le périmètre)',
+        'pentest.toolLabel': 'Outil',
+        'pentest.runScopedScan': 'Lancer le scan ciblé',
+        'pentest.scanRule': 'Les scans ne s’exécutent que lorsque la mission est Active et dans la période autorisée. Les cibles hors périmètre sont rejetées par l’API.',
+        'pentest.manualFindings': 'Constats manuels',
+        'pentest.addManualFinding': 'Ajouter un constat manuel',
+        'mf.title': 'Titre',
+        'mf.titlePlaceholder': 'XSS réfléchie dans le paramètre de recherche',
+        'mf.host': 'Hôte affecté',
+        'mf.severity': 'Sévérité',
+        'mf.cvss': 'Score CVSS',
+        'mf.owasp': 'Catégorie OWASP',
+        'mf.cvssVector': 'Vecteur CVSS',
+        'mf.description': 'Description',
+        'mf.evidence': 'Preuve',
+        'mf.remediation': 'Remédiation',
+        'mf.discoveredBy': 'Découvert par',
+        'mf.saveBtn': 'Enregistrer le constat',
+        'dyn.verified': 'Vérifié',
+        'dyn.unverified': 'Non vérifié',
+        'dyn.verifiedMethod': 'Vérifié ({method})',
+        'dyn.unverifiedLocked': 'Non vérifié — Analyse verrouillée',
+        'dyn.attested': 'Attesté',
+        'dyn.ownerMeta': 'Propriétaire : {owner} · Dernier scan : {date}',
+        'dyn.scansCount': '{n} scan(s)',
+        'dyn.findingsCount': '{n} constat(s)',
+        'dyn.riskSuffix': 'risque {grade}',
+        'dyn.whyMatters': 'Pourquoi c’est important :',
+        'dyn.evidence': 'Preuve :',
+        'dyn.remediation': 'Remédiation :',
+        'dyn.description': 'Description :',
+        'dyn.retestNotes': 'Notes de retest :',
+        'dyn.retestNotesPlaceholder': 'Notes de retest',
+        'dyn.attachScreenshot': 'Joindre une capture',
+        'dyn.screenshots': 'Captures ({n})',
+        'dyn.persistedHint': 'Les chemins persistés ne sont pas servis par l’API ; seules les captures envoyées dans cette session peuvent être prévisualisées.',
+        'dyn.by': 'par {actor}',
+        'dyn.noFindings': 'Aucun constat pour cette vue. Lancez un scan après vérification de propriété.',
+        'dyn.diffEmpty': 'Lancez au moins un scan pour voir les changements dans le temps.',
+        'dyn.diffNew': 'Nouveaux constats depuis le scan précédent',
+        'dyn.diffResolved': 'Constats résolus',
+        'dyn.diffUnchanged': 'Constats inchangés',
+        'dyn.historyEmpty': 'Aucun scan exécuté pour ce domaine.',
+        'dyn.thScan': 'Scan',
+        'dyn.thStarted': 'Démarré',
+        'dyn.thTrigger': 'Déclencheur',
+        'dyn.thHosts': 'Hôtes',
+        'dyn.thRiskScore': 'Score de risque',
+        'dyn.auditEmpty': 'Aucun événement d’audit enregistré.',
+        'dyn.thTimestamp': 'Horodatage',
+        'dyn.thActor': 'Acteur',
+        'dyn.thAction': 'Action',
+        'dyn.thDomain': 'Domaine',
+        'dyn.thDetails': 'Détails',
+        'dyn.noManualFindings': 'Aucun constat manuel. Utilisez « Ajouter un constat manuel » ci-dessus.',
+        'dyn.noScope': 'Aucune entrée de périmètre.',
+        'dyn.createdAt': 'Créé le {date}',
+        'dyn.authMeta': 'Autorisation : {ref} · Testeur : {tester}',
+        'dyn.notesPrefix': 'Notes : {notes}',
+        'dyn.scanBlockedTitle': 'Scan bloqué par le contrôle de périmètre',
+        'dyn.targetRejected': 'Cible rejetée.',
+        'dyn.scanFinished': 'Scan terminé.',
+        'dyn.toolAvailable': 'Outil disponible',
+        'dyn.fallbackRecorded': 'Repli enregistré',
+        'dyn.command': 'Commande',
+        'dyn.statusRequiresActive': 'Le statut est « {status} » — les scans exigent Actif',
+        'dyn.windowOpens': 'La fenêtre autorisée ouvre le {date}',
+        'dyn.windowClosed': 'La fenêtre autorisée est fermée depuis le {date}',
+        'toast.scanRunning': 'Découverte passive et contrôles sûrs en cours...',
+        'toast.scanFeedback': 'Découverte passive et contrôles non intrusifs en cours...',
+        'toast.scanDone': 'Analyse terminée avec succès.',
+        'toast.scheduleUpdated': 'Planification mise à jour.',
+        'toast.summarySent': 'Résumé envoyé.',
+        'toast.domainRemoved': 'Domaine supprimé.',
+        'toast.addScope': 'Ajoutez au moins une entrée de périmètre autorisée.',
+        'toast.engCreated': 'Mission créée.',
+        'toast.enterTarget': 'Saisissez un hôte ou une URL cible.',
+        'toast.scanCompleted': 'Scan terminé.',
+        'toast.manualSaved': 'Constat manuel enregistré.',
+        'toast.invalidImg': 'Seules les captures PNG, JPG, GIF ou WEBP sont autorisées.',
+        'toast.imgTooLarge': 'La capture dépasse la limite de 10 Mo.',
+        'toast.imgAttached': 'Capture jointe.',
+        'toast.retestUpdated': 'Statut de retest mis à jour.',
+        'toast.engStatusUpdated': 'Statut de la mission mis à jour.',
+        'toast.preparingReport': 'Préparation du rapport {format}...',
+        'toast.engRemoved': 'Mission supprimée.',
+      },
+    };
+
+    function t(key, vars = {}) {
+      const dict = I18N[state.lang] || I18N.en;
+      let str = dict[key] ?? I18N.en[key] ?? key;
+      for (const [k, v] of Object.entries(vars)) {
+        str = str.replaceAll(`{${k}}`, String(v ?? ''));
+      }
+      return str;
+    }
+
+    function applyTheme(theme) {
+      state.theme = theme === 'dark' ? 'dark' : 'light';
+      localStorage.setItem('sw_theme', state.theme);
+      document.documentElement.setAttribute('data-theme', state.theme);
+      const btn = document.getElementById('theme-toggle-btn');
+      const iconEl = document.getElementById('theme-toggle-icon');
+      if (iconEl) {
+        iconEl.dataset.icon = state.theme === 'dark' ? 'sun' : 'moon';
+        iconEl.innerHTML = icon(iconEl.dataset.icon, 'w-4 h-4');
+      }
+      if (btn) {
+        const label = state.theme === 'dark' ? t('theme.toLight') : t('theme.toDark');
+        btn.setAttribute('aria-label', label);
+        btn.title = label;
+      }
+    }
+
+    function toggleTheme() {
+      applyTheme(state.theme === 'dark' ? 'light' : 'dark');
+    }
+
+    function applyLanguage(lang) {
+      state.lang = lang === 'fr' ? 'fr' : 'en';
+      localStorage.setItem('sw_lang', state.lang);
+      document.documentElement.lang = state.lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        el.textContent = t(el.dataset.i18n);
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        el.placeholder = t(el.dataset.i18nPlaceholder);
+      });
+      const enEl = document.getElementById('lang-en-label');
+      const frEl = document.getElementById('lang-fr-label');
+      if (enEl && frEl) {
+        enEl.className = state.lang === 'en' ? 'text-white' : 'text-white/50';
+        frEl.className = state.lang === 'fr' ? 'text-white' : 'text-white/50';
+      }
+      const langBtn = document.getElementById('lang-toggle-btn');
+      if (langBtn) langBtn.title = t('lang.switch');
+      applyTheme(state.theme);
+      renderDomainList();
+      if (state.activeDomainId) {
+        const domain = state.domains.find(d => d.id === state.activeDomainId);
+        if (domain) {
+          const verLabel = document.getElementById('active-verified-label');
+          if (verLabel) {
+            verLabel.textContent = domain.verified
+              ? t('dyn.verifiedMethod', { method: domain.verified_method === 'dns_txt' ? 'DNS TXT' : t('dyn.attested') })
+              : t('dyn.unverifiedLocked');
+          }
+          const metaEl = document.getElementById('active-domain-meta');
+          if (metaEl) metaEl.textContent = t('dyn.ownerMeta', { owner: domain.owner_label, date: formatDate(domain.last_scan_at) });
+        }
+        renderActiveTab();
+      }
+      if (state.engagementsLoaded) {
+        renderEngagementList();
+        const eng = state.engagements.find(e => e.id === state.activeEngagementId);
+        if (eng) renderEngagementHeader(eng);
+        renderManualFindings();
+        renderScanResult();
+      }
+    }
+
+    function toggleLanguage() {
+      applyLanguage(state.lang === 'en' ? 'fr' : 'en');
+    }
 
     function escapeHtml(value) {
       return String(value ?? '')
@@ -642,7 +1163,7 @@
     }
 
     function formatDate(iso) {
-      if (!iso) return 'Never';
+      if (!iso) return t('common.never');
       const d = new Date(iso);
       return Number.isNaN(d.getTime()) ? String(iso) : d.toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
     }
@@ -674,6 +1195,9 @@
       trash: '<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>',
       calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M3 10h18"/>',
       user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/>',
+      moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+      sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/>',
+      globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a13 13 0 0 1 0 18"/><path d="M12 3a13 13 0 0 0 0 18"/>',
     };
 
     function icon(name, cls = 'w-4 h-4') {
@@ -723,7 +1247,7 @@
       if (loading) {
         if (!btn.dataset.originalHtml) btn.dataset.originalHtml = btn.innerHTML;
         btn.disabled = true;
-        btn.innerHTML = `<span class="inline-flex items-center justify-center gap-2"><span class="spinner"></span><span>${escapeHtml(label || 'Working...')}</span></span>`;
+        btn.innerHTML = `<span class="inline-flex items-center justify-center gap-2"><span class="spinner"></span><span>${escapeHtml(label || t('common.working'))}</span></span>`;
       } else {
         btn.disabled = false;
         if (btn.dataset.originalHtml) {
@@ -735,7 +1259,7 @@
 
     function severityBadge(sev) {
       const value = String(sev || 'info').toLowerCase();
-      const label = value.charAt(0).toUpperCase() + value.slice(1);
+      const label = t(`sev.${value}`) !== `sev.${value}` ? t(`sev.${value}`) : value.charAt(0).toUpperCase() + value.slice(1);
       return `<span class="${severityStyle(value)}">${escapeHtml(label)}</span>`;
     }
 
@@ -748,8 +1272,8 @@
         paused: 'pill-hold',
         archived: 'pill-muted',
       };
-      const label = value.replace(/_/g, ' ');
-      const pretty = label.charAt(0).toUpperCase() + label.slice(1);
+      const key = `status.${value}`;
+      const pretty = t(key) !== key ? t(key) : value.replace(/_/g, ' ').replace(/^./, c => c.toUpperCase());
       return `<span class="pill ${map[value] || 'pill-muted'}">${escapeHtml(pretty)}</span>`;
     }
 
@@ -762,8 +1286,8 @@
         false_positive: 'pill-muted',
         retested: 'pill-completed',
       };
-      const label = value.replace(/_/g, ' ');
-      const pretty = label.charAt(0).toUpperCase() + label.slice(1);
+      const key = `status.${value}`;
+      const pretty = t(key) !== key ? t(key) : value.replace(/_/g, ' ').replace(/^./, c => c.toUpperCase());
       return `<span class="pill ${map[value] || 'pill-muted'}">${escapeHtml(pretty)}</span>`;
     }
 
@@ -782,9 +1306,9 @@
             </div>
           </summary>
           <div class="mt-3 pt-3 border-t border-slate-100 space-y-2 text-xs text-slate-700">
-            <p><strong>Why it matters:</strong> ${escapeHtml(f.explanation)}</p>
-            <p><strong>Evidence:</strong> <code class="font-mono bg-slate-100 px-1.5 py-0.5 rounded break-all">${escapeHtml(f.evidence)}</code></p>
-            <p><strong>Remediation:</strong> ${escapeHtml(f.remediation)}</p>
+            <p><strong>${escapeHtml(t('dyn.whyMatters'))}</strong> ${escapeHtml(f.explanation)}</p>
+            <p><strong>${escapeHtml(t('dyn.evidence'))}</strong> <code class="font-mono bg-slate-100 px-1.5 py-0.5 rounded break-all">${escapeHtml(f.evidence)}</code></p>
+            <p><strong>${escapeHtml(t('dyn.remediation'))}</strong> ${escapeHtml(f.remediation)}</p>
           </div>
         </details>`;
     }
@@ -805,9 +1329,9 @@
       const hasPersistedOnly = screenshots.some(p => !state.screenshotUrls[p]);
       const shotHtml = screenshots.length
         ? `<div class="mt-3">
-            <div class="text-[11px] font-semibold text-slate-600 mb-1.5">Screenshots (${screenshots.length})</div>
+            <div class="text-[11px] font-semibold text-slate-600 mb-1.5">${escapeHtml(t('dyn.screenshots', { n: screenshots.length }))}</div>
             <div class="flex flex-wrap gap-2">${screenshots.map(screenshotChip).join('')}</div>
-            ${hasPersistedOnly ? '<p class="mt-1.5 text-[11px] text-slate-400">Persisted evidence paths are not served by the API; only screenshots uploaded in this session can be previewed.</p>' : ''}
+            ${hasPersistedOnly ? `<p class="mt-1.5 text-[11px] text-slate-400">${escapeHtml(t('dyn.persistedHint'))}</p>` : ''}
           </div>`
         : '';
       const meta = [];
@@ -821,7 +1345,7 @@
               ${severityBadge(f.severity)}
               <div class="min-w-0">
                 <div class="text-sm font-semibold text-slate-900">${escapeHtml(f.title)}</div>
-                <div class="text-xs text-slate-500 font-mono mt-0.5">${escapeHtml(f.affected_host)} &middot; by ${escapeHtml(f.discovered_by)}</div>
+                <div class="text-xs text-slate-500 font-mono mt-0.5">${escapeHtml(f.affected_host)} &middot; ${escapeHtml(t('dyn.by', { actor: f.discovered_by }))}</div>
               </div>
             </div>
             <div class="flex items-center gap-2">
@@ -830,26 +1354,26 @@
             </div>
           </div>
           ${meta.length ? `<div class="flex flex-wrap gap-1.5 text-[11px]">${meta.map(m => `<span class="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-600 font-mono">${escapeHtml(m)}</span>`).join('')}</div>` : ''}
-          ${f.description ? `<p class="text-xs text-slate-700"><strong>Description:</strong> ${escapeHtml(f.description)}</p>` : ''}
-          ${f.evidence ? `<p class="text-xs text-slate-700"><strong>Evidence:</strong> <code class="font-mono bg-slate-100 px-1.5 py-0.5 rounded break-all">${escapeHtml(f.evidence)}</code></p>` : ''}
-          ${f.remediation ? `<p class="text-xs text-slate-700"><strong>Remediation:</strong> ${escapeHtml(f.remediation)}</p>` : ''}
+          ${f.description ? `<p class="text-xs text-slate-700"><strong>${escapeHtml(t('dyn.description'))}</strong> ${escapeHtml(f.description)}</p>` : ''}
+          ${f.evidence ? `<p class="text-xs text-slate-700"><strong>${escapeHtml(t('dyn.evidence'))}</strong> <code class="font-mono bg-slate-100 px-1.5 py-0.5 rounded break-all">${escapeHtml(f.evidence)}</code></p>` : ''}
+          ${f.remediation ? `<p class="text-xs text-slate-700"><strong>${escapeHtml(t('dyn.remediation'))}</strong> ${escapeHtml(f.remediation)}</p>` : ''}
           ${shotHtml}
-          ${f.retest_notes ? `<p class="text-xs text-slate-600"><strong>Retest notes:</strong> ${escapeHtml(f.retest_notes)}${f.retested_at ? ` <span class="text-slate-400">(${escapeHtml(formatDate(f.retested_at))})</span>` : ''}</p>` : ''}
+          ${f.retest_notes ? `<p class="text-xs text-slate-600"><strong>${escapeHtml(t('dyn.retestNotes'))}</strong> ${escapeHtml(f.retest_notes)}${f.retested_at ? ` <span class="text-slate-400">(${escapeHtml(formatDate(f.retested_at))})</span>` : ''}</p>` : ''}
           <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
             <input id="screenshot-input-${f.id}" type="file" accept=".png,.jpg,.jpeg,.gif,.webp" class="hidden" onchange="handleScreenshotChange(${f.id}, this)" />
             <button type="button" onclick="triggerScreenshotUpload(${f.id})"
               class="btn inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium border border-line-strong text-slate-700 rounded-md hover:bg-slate-50">
-              ${icon('camera', 'w-3.5 h-3.5')}Attach Screenshot
+              ${icon('camera', 'w-3.5 h-3.5')}${escapeHtml(t('dyn.attachScreenshot'))}
             </button>
             <div class="flex flex-wrap items-center gap-1.5">
               <select id="retest-status-${f.id}" class="px-2 py-1.5 text-[11px] border border-line-strong rounded-md bg-white">
-                ${['open', 'remediated', 'accepted_risk', 'false_positive'].map(s => `<option value="${s}" ${f.status === s ? 'selected' : ''}>${s.replace(/_/g, ' ')}</option>`).join('')}
+                ${['open', 'remediated', 'accepted_risk', 'false_positive'].map(s => `<option value="${s}" ${f.status === s ? 'selected' : ''}>${escapeHtml(t(`status.${s}`))}</option>`).join('')}
               </select>
-              <input id="retest-notes-${f.id}" type="text" placeholder="Retest notes"
+              <input id="retest-notes-${f.id}" type="text" placeholder="${escapeHtml(t('dyn.retestNotesPlaceholder'))}"
                 class="w-40 px-2 py-1.5 text-[11px] border border-line-strong rounded-md" />
               <button type="button" onclick="submitRetest(${f.id})"
                 class="btn inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold bg-ink text-white rounded-md hover:opacity-90">
-                ${icon('refresh', 'w-3.5 h-3.5')}Update
+                ${icon('refresh', 'w-3.5 h-3.5')}${escapeHtml(t('common.update'))}
               </button>
             </div>
           </div>
@@ -904,12 +1428,12 @@
     function renderDomainList() {
       const container = document.getElementById('domain-list');
       if (!state.domains.length) {
-        container.innerHTML = '<div class="p-5 text-xs text-slate-500">No domains added yet. Register a domain above to begin.</div>';
+        container.innerHTML = `<div class="p-5 text-xs text-slate-500">${escapeHtml(t('domain.noneAdded'))}</div>`;
         return;
       }
       container.innerHTML = state.domains.map(d => {
         const active = d.id === state.activeDomainId;
-        const verLabel = d.verified ? 'Verified' : 'Unverified';
+        const verLabel = d.verified ? t('dyn.verified') : t('dyn.unverified');
         const verColor = d.verified ? 'text-emerald-700' : 'text-amber-700';
         return `
           <button type="button" onclick="selectDomain(${d.id})"
@@ -919,9 +1443,9 @@
               <span class="font-mono tabular-nums text-xs font-bold text-slate-800">${d.latest_risk_score}/100</span>
             </div>
             <div class="flex items-center gap-2 text-xs text-slate-500 mt-1">
-              <span class="${verColor} font-medium">${verLabel}</span>
+              <span class="${verColor} font-medium">${escapeHtml(verLabel)}</span>
               <span aria-hidden="true">&middot;</span>
-              <span class="font-mono tabular-nums">${d.scan_count} scan(s)</span>
+              <span class="font-mono tabular-nums">${escapeHtml(t('dyn.scansCount', { n: d.scan_count }))}</span>
             </div>
           </button>
         `;
@@ -967,12 +1491,12 @@
       document.getElementById('active-domain-title').textContent = domain.name;
       const verLabel = document.getElementById('active-verified-label');
       verLabel.textContent = domain.verified
-        ? `Verified (${domain.verified_method === 'dns_txt' ? 'DNS TXT' : 'Attested'})`
-        : 'Unverified — Scanning Locked';
+        ? t('dyn.verifiedMethod', { method: domain.verified_method === 'dns_txt' ? 'DNS TXT' : t('dyn.attested') })
+        : t('dyn.unverifiedLocked');
       verLabel.className = `text-xs font-semibold ${domain.verified ? 'text-emerald-700' : 'text-amber-700'}`;
 
       document.getElementById('active-domain-meta').textContent =
-        `Owner: ${domain.owner_label} · Last Scan: ${formatDate(domain.last_scan_at)}`;
+        t('dyn.ownerMeta', { owner: domain.owner_label, date: formatDate(domain.last_scan_at) });
       document.getElementById('schedule-enabled').checked = domain.schedule_enabled;
       document.getElementById('schedule-days').value = domain.scan_interval_days;
 
@@ -1057,7 +1581,7 @@
       });
 
       if (!filtered.length) {
-        container.innerHTML = '<div class="p-8 text-center text-xs text-slate-500">No findings match the current view. Run a scan after verifying ownership.</div>';
+        container.innerHTML = `<div class="p-8 text-center text-xs text-slate-500">${escapeHtml(t('dyn.noFindings'))}</div>`;
         return;
       }
 
@@ -1075,7 +1599,7 @@
               <span class="font-mono text-slate-500">${escapeHtml(f.host)}</span>
             </div>
           `).join('')
-        : '<div class="px-4 py-3 text-xs text-slate-500">None</div>';
+        : `<div class="px-4 py-3 text-xs text-slate-500">${escapeHtml(t('common.none'))}</div>`;
 
       return `
         <div class="card bg-white border border-slate-200 rounded-xl overflow-hidden">
@@ -1091,20 +1615,20 @@
     function renderDiff() {
       const container = document.getElementById('tab-diff');
       if (!state.diff || !state.diff.current_scan_id) {
-        container.innerHTML = '<div class="card bg-white border border-slate-200 rounded-xl p-8 text-center text-xs text-slate-500">Run at least one scan to see changes over time.</div>';
+        container.innerHTML = `<div class="card bg-white border border-slate-200 rounded-xl p-8 text-center text-xs text-slate-500">${escapeHtml(t('dyn.diffEmpty'))}</div>`;
         return;
       }
       container.innerHTML = [
-        renderDiffGroup('New Findings Since Previous Scan', state.diff.new, 'text-amber-800'),
-        renderDiffGroup('Resolved Findings', state.diff.resolved, 'text-emerald-800'),
-        renderDiffGroup('Unchanged Findings', state.diff.unchanged, 'text-slate-700'),
+        renderDiffGroup(t('dyn.diffNew'), state.diff.new, 'text-amber-800'),
+        renderDiffGroup(t('dyn.diffResolved'), state.diff.resolved, 'text-emerald-800'),
+        renderDiffGroup(t('dyn.diffUnchanged'), state.diff.unchanged, 'text-slate-700'),
       ].join('');
     }
 
     function renderHistory() {
       const container = document.getElementById('tab-history');
       if (!state.scans.length) {
-        container.innerHTML = '<div class="p-8 text-center text-xs text-slate-500">No scans have been executed for this domain yet.</div>';
+        container.innerHTML = `<div class="p-8 text-center text-xs text-slate-500">${escapeHtml(t('dyn.historyEmpty'))}</div>`;
         return;
       }
       container.innerHTML = `
@@ -1112,11 +1636,11 @@
           <table class="w-full min-w-[640px] text-left text-xs">
             <thead class="bg-slate-50 border-b border-slate-200 text-slate-600">
               <tr>
-                <th class="px-4 py-2.5 font-semibold">Scan</th>
-                <th class="px-4 py-2.5 font-semibold">Started</th>
-                <th class="px-4 py-2.5 font-semibold">Trigger</th>
-                <th class="px-4 py-2.5 font-semibold">Hosts</th>
-                <th class="px-4 py-2.5 font-semibold text-right">Risk Score</th>
+                <th class="px-4 py-2.5 font-semibold">${escapeHtml(t('dyn.thScan'))}</th>
+                <th class="px-4 py-2.5 font-semibold">${escapeHtml(t('dyn.thStarted'))}</th>
+                <th class="px-4 py-2.5 font-semibold">${escapeHtml(t('dyn.thTrigger'))}</th>
+                <th class="px-4 py-2.5 font-semibold">${escapeHtml(t('dyn.thHosts'))}</th>
+                <th class="px-4 py-2.5 font-semibold text-right">${escapeHtml(t('dyn.thRiskScore'))}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
@@ -1138,7 +1662,7 @@
     function renderAudit() {
       const container = document.getElementById('tab-audit');
       if (!state.auditLogs.length) {
-        container.innerHTML = '<div class="p-8 text-center text-xs text-slate-500">No audit events recorded yet.</div>';
+        container.innerHTML = `<div class="p-8 text-center text-xs text-slate-500">${escapeHtml(t('dyn.auditEmpty'))}</div>`;
         return;
       }
       container.innerHTML = `
@@ -1146,11 +1670,11 @@
           <table class="w-full min-w-[720px] text-left text-xs">
             <thead class="bg-slate-50 border-b border-slate-200 text-slate-600">
               <tr>
-                <th class="px-4 py-2.5 font-semibold">Timestamp</th>
-                <th class="px-4 py-2.5 font-semibold">Actor</th>
-                <th class="px-4 py-2.5 font-semibold">Action</th>
-                <th class="px-4 py-2.5 font-semibold">Domain</th>
-                <th class="px-4 py-2.5 font-semibold">Details</th>
+                <th class="px-4 py-2.5 font-semibold">${escapeHtml(t('dyn.thTimestamp'))}</th>
+                <th class="px-4 py-2.5 font-semibold">${escapeHtml(t('dyn.thActor'))}</th>
+                <th class="px-4 py-2.5 font-semibold">${escapeHtml(t('dyn.thAction'))}</th>
+                <th class="px-4 py-2.5 font-semibold">${escapeHtml(t('dyn.thDomain'))}</th>
+                <th class="px-4 py-2.5 font-semibold">${escapeHtml(t('dyn.thDetails'))}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
@@ -1226,16 +1750,16 @@
       if (!state.activeDomainId || state.scanning) return;
       state.scanning = true;
       const btn = document.getElementById('header-scan-btn');
-      setButtonLoading(btn, true, 'Scanning...');
-      setFeedback('Running passive discovery and non-intrusive checks...');
-      toast('Running passive discovery and safe checks...', 'info', 2400);
+      setButtonLoading(btn, true, t('common.scanning'));
+      setFeedback(t('toast.scanFeedback'));
+      toast(t('toast.scanRunning'), 'info', 2400);
       try {
         await apiFetch(`/api/domains/${state.activeDomainId}/scan`, {
           method: 'POST',
           body: JSON.stringify({ actor: 'local-owner' }),
         });
-        setFeedback('Scan completed successfully.');
-        toast('Scan completed successfully.');
+        setFeedback(t('toast.scanDone'));
+        toast(t('toast.scanDone'));
         await loadDomains(state.activeDomainId);
       } catch (err) {
         setFeedback(err.message, true);
@@ -1258,8 +1782,8 @@
             scan_interval_days: Number(document.getElementById('schedule-days').value) || 7,
           }),
         });
-        setFeedback('Schedule updated.');
-        toast('Schedule updated.');
+        setFeedback(t('toast.scheduleUpdated'));
+        toast(t('toast.scheduleUpdated'));
       } catch (err) {
         setFeedback(err.message, true);
         toast(err.message, 'error');
@@ -1275,7 +1799,7 @@
       if (!state.activeDomainId) return;
       try {
         const res = await apiFetch(`/api/domains/${state.activeDomainId}/notify`, { method: 'POST' });
-        const text = (res.details && res.details.length) ? res.details.join(' | ') : 'Summary sent.';
+        const text = (res.details && res.details.length) ? res.details.join(' | ') : t('toast.summarySent');
         setFeedback(text);
         toast(text);
       } catch (err) {
@@ -1289,7 +1813,7 @@
       try {
         await apiFetch(`/api/domains/${state.activeDomainId}`, { method: 'DELETE' });
         state.activeDomainId = null;
-        toast('Domain removed.');
+        toast(t('toast.domainRemoved'));
         await loadDomains();
       } catch (err) {
         setFeedback(err.message, true);
@@ -1315,7 +1839,7 @@
     function renderEngagementList() {
       const container = document.getElementById('engagement-list');
       if (!state.engagements.length) {
-        container.innerHTML = '<div class="p-5 text-xs text-slate-500">No engagements yet. Create one above to begin.</div>';
+        container.innerHTML = `<div class="p-5 text-xs text-slate-500">${escapeHtml(t('pentest.noneYet'))}</div>`;
         return;
       }
       container.innerHTML = state.engagements.map(e => {
@@ -1328,8 +1852,8 @@
               ${engagementStatusBadge(e.status)}
             </div>
             <div class="flex items-center justify-between gap-2 text-xs text-slate-500 mt-1.5">
-              <span class="font-mono tabular-nums">${e.finding_count} finding(s)</span>
-              <span class="font-medium text-slate-700">${escapeHtml(e.risk_grade)} risk</span>
+              <span class="font-mono tabular-nums">${escapeHtml(t('dyn.findingsCount', { n: e.finding_count }))}</span>
+              <span class="font-medium text-slate-700">${escapeHtml(t('dyn.riskSuffix', { grade: e.risk_grade }))}</span>
             </div>
             <div class="text-[11px] text-slate-400 mt-1 font-mono tabular-nums">${escapeHtml(e.start_date)} &rarr; ${escapeHtml(e.end_date)}</div>
           </button>`;
@@ -1371,11 +1895,11 @@
     function renderEngagementHeader(e) {
       document.getElementById('eng-title').textContent = e.client_name;
       document.getElementById('eng-status-badge').innerHTML = engagementStatusBadge(e.status);
-      document.getElementById('eng-meta').textContent = `Authorization: ${e.authorization_reference} · Tester: ${e.tester}`;
+      document.getElementById('eng-meta').textContent = t('dyn.authMeta', { ref: e.authorization_reference, tester: e.tester });
       document.getElementById('eng-finding-count').textContent = String(e.finding_count);
       document.getElementById('eng-risk-grade').textContent = e.risk_grade;
       document.getElementById('eng-window').textContent = `${e.start_date} → ${e.end_date}`;
-      document.getElementById('eng-created').textContent = `Created ${formatDate(e.created_at)}`;
+      document.getElementById('eng-created').textContent = t('dyn.createdAt', { date: formatDate(e.created_at) });
 
       const sel = document.getElementById('eng-status-select');
       if (![...sel.options].some(o => o.value === e.status)) {
@@ -1389,11 +1913,11 @@
       const scopeEl = document.getElementById('eng-scope');
       scopeEl.innerHTML = (e.scope || []).length
         ? e.scope.map(s => `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200 text-xs font-mono text-slate-700">${icon('target', 'w-3.5 h-3.5 text-slate-500')}${escapeHtml(s)}</span>`).join('')
-        : '<span class="text-xs text-slate-500">No scope entries.</span>';
+        : `<span class="text-xs text-slate-500">${escapeHtml(t('dyn.noScope'))}</span>`;
 
       const notesEl = document.getElementById('eng-notes');
       if (e.notes) {
-        notesEl.textContent = `Notes: ${e.notes}`;
+        notesEl.textContent = t('dyn.notesPrefix', { notes: e.notes });
         notesEl.classList.remove('hidden');
       } else {
         notesEl.classList.add('hidden');
@@ -1410,9 +1934,9 @@
       if (!warning || !btn) return;
       const today = todayIso();
       let reason = '';
-      if (e.status !== 'active') reason = `Status is "${e.status.replace(/_/g, ' ')}" — scans require Active`;
-      else if (today < e.start_date) reason = `Authorized window opens ${e.start_date}`;
-      else if (today > e.end_date) reason = `Authorized window closed ${e.end_date}`;
+      if (e.status !== 'active') reason = t('dyn.statusRequiresActive', { status: t(`status.${e.status}`) !== `status.${e.status}` ? t(`status.${e.status}`) : e.status.replace(/_/g, ' ') });
+      else if (today < e.start_date) reason = t('dyn.windowOpens', { date: e.start_date });
+      else if (today > e.end_date) reason = t('dyn.windowClosed', { date: e.end_date });
       if (reason) {
         warning.classList.remove('hidden');
         warning.innerHTML = `<span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-800 bg-amber-50 border border-amber-200 rounded-full px-2.5 py-1">${icon('warning', 'w-3.5 h-3.5')}<span>${escapeHtml(reason)}</span></span>`;
@@ -1439,8 +1963,8 @@
             <div class="flex items-start gap-3">
               <span class="text-red-600 mt-0.5">${icon('warning', 'w-5 h-5')}</span>
               <div class="min-w-0">
-                <p class="text-sm font-semibold text-red-900">Scan blocked by scope enforcement</p>
-                <p class="text-xs text-red-800 mt-1">${escapeHtml(result.detail || result.error || 'Target rejected.')}</p>
+                <p class="text-sm font-semibold text-red-900">${escapeHtml(t('dyn.scanBlockedTitle'))}</p>
+                <p class="text-xs text-red-800 mt-1">${escapeHtml(result.detail || result.error || t('dyn.targetRejected'))}</p>
                 <p class="text-[11px] text-red-700 mt-2 font-mono break-all">tool=${escapeHtml(result.tool)} · target=${escapeHtml(result.target)}</p>
               </div>
             </div>
@@ -1454,14 +1978,14 @@
             <div class="flex items-start gap-3">
               <span class="${result.tool_available ? 'text-emerald-700' : 'text-amber-700'} mt-0.5">${icon(result.tool_available ? 'check' : 'warning', 'w-5 h-5')}</span>
               <div>
-                <p class="text-sm font-semibold text-slate-900">${escapeHtml(result.message || 'Scan finished.')}</p>
-                <p class="text-xs text-slate-600 mt-1 font-mono">${escapeHtml(result.tool)} · ${escapeHtml(result.target)} · ${result.findings_created} finding(s)</p>
+                <p class="text-sm font-semibold text-slate-900">${escapeHtml(result.message || t('dyn.scanFinished'))}</p>
+                <p class="text-xs text-slate-600 mt-1 font-mono">${escapeHtml(result.tool)} · ${escapeHtml(result.target)} · ${escapeHtml(t('dyn.findingsCount', { n: result.findings_created }))}</p>
               </div>
             </div>
-            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${result.tool_available ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${result.tool_available ? 'Tool available' : 'Fallback recorded'}</span>
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${result.tool_available ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${escapeHtml(result.tool_available ? t('dyn.toolAvailable') : t('dyn.fallbackRecorded'))}</span>
           </div>
           ${result.error ? `<p class="text-xs text-amber-800">${escapeHtml(result.error)}</p>` : ''}
-          ${result.raw_command ? `<div><div class="text-[11px] font-semibold text-slate-600 mb-1">Command</div><code class="block text-[11px] font-mono bg-white/70 border border-slate-200 rounded px-2 py-1.5 break-all">${escapeHtml(result.raw_command)}</code></div>` : ''}
+          ${result.raw_command ? `<div><div class="text-[11px] font-semibold text-slate-600 mb-1">${escapeHtml(t('dyn.command'))}</div><code class="block text-[11px] font-mono bg-white/70 border border-slate-200 rounded px-2 py-1.5 break-all">${escapeHtml(result.raw_command)}</code></div>` : ''}
           ${findings.length ? `<div class="rounded-md border border-slate-200 bg-white overflow-hidden divide-y divide-slate-100">${findings.map(f => findingCard(f)).join('')}</div>` : ''}
         </div>`;
     }
@@ -1470,7 +1994,7 @@
       const container = document.getElementById('manual-findings-list');
       document.getElementById('manual-count').textContent = String(state.manualFindings.length);
       if (!state.manualFindings.length) {
-        container.innerHTML = '<div class="p-8 text-center text-xs text-slate-500">No manual findings yet. Use "Add Manual Finding" above to record a validated issue.</div>';
+        container.innerHTML = `<div class="p-8 text-center text-xs text-slate-500">${escapeHtml(t('dyn.noManualFindings'))}</div>`;
         return;
       }
       container.innerHTML = state.manualFindings.map(manualFindingCard).join('');
@@ -1523,7 +2047,7 @@
       const btn = document.getElementById('create-engagement-btn');
       const scope = parseScopeEntries(document.getElementById('eng-scope').value);
       if (!scope.length) {
-        toast('Add at least one authorized scope entry.', 'error');
+        toast(t('toast.addScope'), 'error');
         return;
       }
       const payload = {
@@ -1535,13 +2059,13 @@
         tester: document.getElementById('eng-tester').value.trim() || 'local-owner',
         notes: document.getElementById('eng-notes').value.trim(),
       };
-      setButtonLoading(btn, true, 'Creating...');
+      setButtonLoading(btn, true, t('common.creating'));
       try {
         const created = await apiFetch('/api/engagements', { method: 'POST', body: JSON.stringify(payload) });
         document.getElementById('engagement-form').reset();
         document.getElementById('eng-tester').value = 'local-owner';
         setDefaultEngagementDates();
-        toast('Engagement created.');
+        toast(t('toast.engCreated'));
         await loadEngagements(created.id);
       } catch (err) {
         toast(err.message, 'error');
@@ -1557,12 +2081,12 @@
       const target = document.getElementById('scan-target').value.trim();
       const tool = document.getElementById('scan-tool').value;
       if (!target) {
-        toast('Enter a target host or URL.', 'error');
+        toast(t('toast.enterTarget'), 'error');
         return;
       }
       const btn = document.getElementById('engagement-scan-btn');
       state.scanRunning = true;
-      setButtonLoading(btn, true, 'Scanning...');
+      setButtonLoading(btn, true, t('common.scanning'));
       try {
         const res = await apiFetch(`/api/engagements/${state.activeEngagementId}/scan`, {
           method: 'POST',
@@ -1570,7 +2094,7 @@
         });
         state.scanResult = res;
         renderScanResult();
-        toast(res.message || 'Scan completed.', res.tool_available ? 'success' : 'error', res.tool_available ? 4200 : 7000);
+        toast(res.message || t('toast.scanCompleted'), res.tool_available ? 'success' : 'error', res.tool_available ? 4200 : 7000);
         await loadEngagements(state.activeEngagementId);
       } catch (err) {
         if (err.status === 403) {
@@ -1614,7 +2138,7 @@
         remediation: document.getElementById('mf-remediation').value.trim(),
         discovered_by: document.getElementById('mf-discovered-by').value.trim() || 'local-owner',
       };
-      setButtonLoading(btn, true, 'Saving...');
+      setButtonLoading(btn, true, t('common.saving'));
       try {
         await apiFetch(`/api/engagements/${state.activeEngagementId}/manual-findings`, {
           method: 'POST',
@@ -1624,7 +2148,7 @@
         document.getElementById('mf-discovered-by').value = 'local-owner';
         document.getElementById('mf-severity').value = 'medium';
         document.getElementById('manual-finding-details').open = false;
-        toast('Manual finding saved.');
+        toast(t('toast.manualSaved'));
         await loadEngagements(state.activeEngagementId);
       } catch (err) {
         toast(err.message, 'error');
@@ -1642,12 +2166,12 @@
       const file = input.files && input.files[0];
       if (!file) return;
       if (!/\.(png|jpe?g|gif|webp)$/i.test(file.name)) {
-        toast('Only PNG, JPG, GIF or WEBP screenshots are allowed.', 'error');
+        toast(t('toast.invalidImg'), 'error');
         input.value = '';
         return;
       }
       if (file.size > 10 * 1024 * 1024) {
-        toast('Screenshot exceeds the 10MB limit.', 'error');
+        toast(t('toast.imgTooLarge'), 'error');
         input.value = '';
         return;
       }
@@ -1663,7 +2187,7 @@
         const idx = state.manualFindings.findIndex(f => f.id === id);
         if (idx >= 0) state.manualFindings[idx] = updated;
         renderManualFindings();
-        toast('Screenshot attached.');
+        toast(t('toast.imgAttached'));
       } catch (err) {
         toast(err.message, 'error');
       } finally {
@@ -1683,7 +2207,7 @@
         const idx = state.manualFindings.findIndex(f => f.id === id);
         if (idx >= 0) state.manualFindings[idx] = updated;
         renderManualFindings();
-        toast('Retest status updated.');
+        toast(t('toast.retestUpdated'));
       } catch (err) {
         toast(err.message, 'error');
       }
@@ -1692,7 +2216,7 @@
     async function updateEngagementStatus(btn) {
       if (!state.activeEngagementId) return;
       const status = document.getElementById('eng-status-select').value;
-      setButtonLoading(btn, true, 'Updating...');
+      setButtonLoading(btn, true, t('common.updating'));
       try {
         const updated = await apiFetch(`/api/engagements/${state.activeEngagementId}/status`, {
           method: 'PATCH',
@@ -1702,7 +2226,7 @@
         if (idx >= 0) state.engagements[idx] = updated;
         renderEngagementList();
         renderEngagementHeader(updated);
-        toast('Engagement status updated.');
+        toast(t('toast.engStatusUpdated'));
       } catch (err) {
         toast(err.message, 'error');
       } finally {
@@ -1713,7 +2237,7 @@
     function exportVapt(format) {
       if (!state.activeEngagementId) return;
       window.open(`/api/engagements/${state.activeEngagementId}/report?format=${encodeURIComponent(format)}`, '_blank', 'noopener');
-      toast(`Preparing ${format.toUpperCase()} report...`, 'info');
+      toast(t('toast.preparingReport', { format: format.toUpperCase() }), 'info');
     }
 
     async function deleteActiveEngagement() {
@@ -1723,7 +2247,7 @@
         state.activeEngagementId = null;
         state.scanResult = null;
         state.manualFindings = [];
-        toast('Engagement removed.');
+        toast(t('toast.engRemoved'));
         await loadEngagements();
       } catch (err) {
         toast(err.message, 'error');
@@ -1736,6 +2260,8 @@
 
     async function init() {
       hydrateIcons();
+      applyTheme(state.theme);
+      applyLanguage(state.lang);
       applyTabState();
       setDefaultEngagementDates();
       try {
