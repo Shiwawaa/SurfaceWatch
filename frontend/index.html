@@ -58,7 +58,7 @@
       color-scheme: light;
     }
     ::selection { background: #CFE9E2; }
-    body { background: var(--canvas); color: var(--ink); }
+    html, body { background: var(--canvas); color: var(--ink); overscroll-behavior: none; }
     .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow-card); }
     .btn { transition: background-color .16s ease, color .16s ease, border-color .16s ease, opacity .16s ease; }
     .btn:active:not(:disabled) { opacity: .92; }
