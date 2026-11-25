@@ -66,7 +66,7 @@
     input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
     .topnav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; color: #C6CFDB; font-weight: 500; white-space: nowrap; transition: color .16s ease, background-color .16s ease; }
     .topnav-btn:hover { color: #FFFFFF; background: rgba(255, 255, 255, .06); }
-    .topnav-btn.is-active { color: #FFFFFF; background: rgba(255, 255, 255, .10); box-shadow: inset 0 -2px 0 var(--accent); }
+    .topnav-btn.is-active { color: #FFFFFF; background: rgba(255, 255, 255, .10); }
     .tab-btn { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 6px; color: var(--muted); transition: background-color .16s ease, color .16s ease, box-shadow .16s ease; }
     .tab-btn:hover { color: var(--ink); }
     .tab-btn.is-active { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(15, 26, 43, .06); }
@@ -105,16 +105,6 @@
 </head>
 <body class="bg-canvas text-ink font-sans antialiased min-h-screen">
   <div id="toast-container" aria-live="polite" aria-atomic="false"></div>
-
-  <!-- Defensive-Use Mandate Banner -->
-  <div class="bg-[#0B1420] text-[#AEB9C7] text-xs px-6 py-2.5 border-b border-white/10">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-      <span>
-        <strong class="font-semibold text-[#E6EBF2]">Authorized Defensive Use Only:</strong> SurfaceWatch performs passive discovery and non-intrusive checks strictly on domains you own or have written authorization to monitor.
-      </span>
-      <span class="text-[#8FA0B5]">Passive CT + Safe Checks</span>
-    </div>
-  </div>
 
   <!-- Top Navigation Bar (3-zone contract) -->
   <header class="bg-ink border-b border-white/10 px-6 py-3.5" role="banner">
