@@ -76,6 +76,89 @@ All scanners implement the common `Scanner.run(target) -> list[Finding]` interfa
 
 ---
 
+## Pentest Mode (Scoped VAPT Engagements)
+
+Pentest Mode is a separate, API-only workflow for authorized, time-boxed VAPT engagements. It adds scoped active tooling (Nmap and nuclei) and manual analyst findings on top of the existing passive monitor. Domain scanning, reports, notifications, and scheduling are unchanged.
+
+### Flow: create → scan → manual findings → report
+
+1. **Create an engagement** with the client, authorization reference, validity window, and explicit scope. Scope entries may be CIDR ranges (`10.0.0.0/8`), individual IPs (`203.0.113.10`), domains (`example.com`), or wildcard domains (`*.example.com`).
+
+   ```http
+   POST /api/engagements
+   Content-Type: application/json
+
+   {
+     "client_name": "Acme Bakery",
+     "authorization_reference": "SOW-2026-014 signed 2026-01-05",
+     "scope": ["10.0.0.0/8", "*.acme-bakery.com"],
+     "start_date": "2026-01-10",
+     "end_date": "2026-01-24",
+     "tester": "alice",
+     "notes": "External perimeter test approved by the CTO."
+   }
+   ```
+
+2. **Run a scoped active scan.** The scope gate (`assert_scan_allowed`) rejects expired/out-of-window engagements and out-of-scope targets with `403` before any network traffic. `nmap` and `nuclei` are invoked in safe mode from `PATH`; if a binary is missing, SurfaceWatch records an `INFO` fallback finding instead of crashing.
+
+   ```http
+   POST /api/engagements/1/scan
+   Content-Type: application/json
+
+   { "target": "10.1.2.3", "tool": "nmap", "actor": "alice" }
+   ```
+
+   ```http
+   POST /api/engagements/1/scan
+   Content-Type: application/json
+
+   { "target": "https://shop.acme-bakery.com", "tool": "nuclei", "actor": "alice" }
+   ```
+
+3. **Add manual findings** (optionally attaching screenshot evidence, max 10MB, `.png/.jpg/.jpeg/.gif/.webp`).
+
+   ```http
+   POST /api/engagements/1/manual-findings
+   Content-Type: application/json
+
+   {
+     "title": "Default admin credentials accepted",
+     "affected_host": "admin.acme-bakery.com",
+     "severity": "critical",
+     "cvss_score": 9.8,
+     "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+     "owasp_category": "A07 Identification and Authentication Failures",
+     "description": "The admin panel accepted admin/admin.",
+     "evidence": "Logged in as administrator without changing the password.",
+     "remediation": "Force a password change and enable MFA.",
+     "discovered_by": "alice"
+   }
+   ```
+
+   ```http
+   POST /api/engagements/1/manual-findings/1/screenshot
+   Content-Type: multipart/form-data
+   ```
+
+   ```http
+   PATCH /api/engagements/1/manual-findings/1/retest
+   Content-Type: application/json
+
+   { "status": "fixed", "retest_notes": "Password rotated and MFA enforced on 2026-01-20." }
+   ```
+
+4. **Export the VAPT report** in HTML, PDF, or DOCX. The report combines automated `FindingRecord` rows (refs `A-01`, `A-02`, ...) and manual findings (refs `M-01`, `M-02`, ...) with an executive summary, scope & methodology, findings summary table, detailed sections, retest summary, and a CONFIDENTIAL footer.
+
+   ```http
+   GET /api/engagements/1/report?format=html
+   GET /api/engagements/1/report?format=pdf
+   GET /api/engagements/1/report?format=docx
+   ```
+
+Every scan attempt (allowed or blocked) is written to the existing audit trail.
+
+---
+
 ## Configuration
 
 Configure via `.env` (see `.env.example`):
@@ -104,6 +187,8 @@ Configure via `.env` (see `.env.example`):
 - **No Exploitation or Authenticated Scanning**: By design, no vulnerability payloads, credential brute-forcing, or directory wordlists are used.
 - **CT Log Completeness**: Passive discovery depends on public Certificate Transparency logs (`crt.sh`) and may miss hosts that have never been issued a public TLS certificate.
 - **Single-Node Default**: SQLite is configured for straightforward small-business self-hosting; high-volume deployments should switch `DATABASE_URL` to PostgreSQL.
+- **Pentest Mode is API-only**: there is no dashboard UI for engagements, active scans, manual findings, screenshots, or VAPT reports yet. Use the REST endpoints documented above.
+- **No database migration system**: Pentest Mode adds new tables and columns to the existing SQLite schema. When upgrading an existing local `data/surfacewatch.db`, delete it and let SurfaceWatch recreate the database on startup; any existing local scan history will be lost.
 
 ---
 

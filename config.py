@@ -27,6 +27,12 @@ class Settings(BaseSettings):
     operator_id: str = "local-owner"
     allow_self_attestation: bool = True
 
+    nmap_binary: str = "nmap"
+    nuclei_binary: str = "nuclei"
+    nmap_timeout_seconds: float = 120.0
+    nuclei_timeout_seconds: float = 180.0
+    evidence_dir: str = "./data/evidence"
+
     telegram_bot_token: str = ""
     telegram_chat_id: str = ""
 

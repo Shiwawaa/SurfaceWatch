@@ -30,6 +30,10 @@ class Finding:
     host: str
     scanner: str
     code: str = ""
+    cve_id: str | None = None
+    owasp_category: str | None = None
+    cvss_score: float | None = None
+    source: str = "scanner"
 
     @classmethod
     def create(
@@ -43,6 +47,10 @@ class Finding:
         explanation: str,
         evidence: str,
         remediation: str,
+        cve_id: str | None = None,
+        owasp_category: str | None = None,
+        cvss_score: float | None = None,
+        source: str = "scanner",
     ) -> "Finding":
         return cls(
             id=make_finding_id(scanner, host, code),
@@ -54,6 +62,10 @@ class Finding:
             host=host,
             scanner=scanner,
             code=code,
+            cve_id=cve_id,
+            owasp_category=owasp_category,
+            cvss_score=cvss_score,
+            source=source,
         )
 
 

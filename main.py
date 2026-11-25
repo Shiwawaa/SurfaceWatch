@@ -4,6 +4,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 
+from api.pentest_routes import router as pentest_router
 from api.routes import router as api_router
 from config import get_settings
 from database import init_db
@@ -31,6 +32,7 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
     app.include_router(api_router)
+    app.include_router(pentest_router)
 
     @app.get("/", include_in_schema=False)
     def serve_dashboard() -> FileResponse:

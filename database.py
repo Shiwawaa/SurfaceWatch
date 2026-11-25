@@ -28,6 +28,7 @@ SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, expi
 
 def init_db() -> None:
     import models.domain  # noqa: F401
+    import models.engagement  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
 

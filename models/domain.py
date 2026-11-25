@@ -1,9 +1,13 @@
 from datetime import datetime, timezone
+from typing import TYPE_CHECKING
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Base
+
+if TYPE_CHECKING:
+    from models.engagement import Engagement
 
 
 def utcnow() -> datetime:
@@ -72,8 +76,15 @@ class FindingRecord(Base):
     __tablename__ = "findings"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    scan_id: Mapped[int] = mapped_column(ForeignKey("scans.id"), index=True, nullable=False)
-    domain_id: Mapped[int] = mapped_column(ForeignKey("domains.id"), index=True, nullable=False)
+    scan_id: Mapped[int | None] = mapped_column(
+        ForeignKey("scans.id"), index=True, nullable=True
+    )
+    domain_id: Mapped[int | None] = mapped_column(
+        ForeignKey("domains.id"), index=True, nullable=True
+    )
+    engagement_id: Mapped[int | None] = mapped_column(
+        ForeignKey("engagements.id"), index=True, nullable=True
+    )
     finding_uid: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     scanner: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     host: Mapped[str] = mapped_column(String(255), index=True, nullable=False)
@@ -82,11 +93,16 @@ class FindingRecord(Base):
     explanation: Mapped[str] = mapped_column(Text, nullable=False)
     evidence: Mapped[str] = mapped_column(Text, nullable=False)
     remediation: Mapped[str] = mapped_column(Text, nullable=False)
+    cve_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    owasp_category: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    cvss_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    source: Mapped[str] = mapped_column(String(32), default="scanner", nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utcnow, nullable=False
     )
 
-    scan: Mapped["Scan"] = relationship(back_populates="findings")
+    scan: Mapped["Scan | None"] = relationship(back_populates="findings")
+    engagement: Mapped["Engagement | None"] = relationship(back_populates="findings")
 
 
 class AuditLog(Base):
