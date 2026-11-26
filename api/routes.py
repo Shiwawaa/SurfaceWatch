@@ -347,6 +347,7 @@ def domain_diff(domain_id: int, db: Session = Depends(get_db)) -> DiffOut:
 def export_report(
     domain_id: int,
     format: str = Query(default="html", pattern="^(html|pdf)$"),
+    lang: str = Query(default="en", pattern="^(en|fr)$"),
     db: Session = Depends(get_db),
 ) -> Response:
     domain = _get_domain_or_404(db, domain_id)
@@ -375,7 +376,7 @@ def export_report(
     )
 
     if format == "pdf":
-        pdf_bytes = generate_pdf_report(domain, latest_scan, findings, diff)
+        pdf_bytes = generate_pdf_report(domain, latest_scan, findings, diff, lang=lang)
         return Response(
             content=pdf_bytes,
             media_type="application/pdf",
@@ -384,7 +385,7 @@ def export_report(
             },
         )
 
-    html_doc = generate_html_report(domain, latest_scan, findings, diff)
+    html_doc = generate_html_report(domain, latest_scan, findings, diff, lang=lang)
     return HTMLResponse(
         content=html_doc,
         headers={

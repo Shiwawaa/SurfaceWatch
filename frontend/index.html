@@ -1792,7 +1792,7 @@
 
     function exportReport(format) {
       if (!state.activeDomainId) return;
-      window.location.href = `/api/domains/${state.activeDomainId}/report?format=${format}`;
+      window.location.href = `/api/domains/${state.activeDomainId}/report?format=${encodeURIComponent(format)}&lang=${encodeURIComponent(state.lang)}`;
     }
 
     async function sendNotifications() {
@@ -2236,7 +2236,7 @@
 
     function exportVapt(format) {
       if (!state.activeEngagementId) return;
-      window.open(`/api/engagements/${state.activeEngagementId}/report?format=${encodeURIComponent(format)}`, '_blank', 'noopener');
+      window.open(`/api/engagements/${state.activeEngagementId}/report?format=${encodeURIComponent(format)}&lang=${encodeURIComponent(state.lang)}`, '_blank', 'noopener');
       toast(t('toast.preparingReport', { format: format.toUpperCase() }), 'info');
     }
 
