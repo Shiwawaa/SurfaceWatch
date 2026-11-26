@@ -1,10 +1,37 @@
-# SurfaceWatch
+<p align="center">
+  <img src="docs/screenshots/logo.png" alt="SurfaceWatch logo" width="220">
+</p>
 
-**Open-source external attack-surface monitor for small businesses.**
+<h1 align="center">SurfaceWatch</h1>
 
-Small businesses rarely know every subdomain, SSL certificate, email authentication gap, open database port, or leaked `.env`/`.git` path exposed on their public domain. **SurfaceWatch** gives business owners and IT generalists a self-hosted, defensive monitoring dashboard that tracks public exposures over time, explains each risk in plain English, and highlights exactly what changed since the previous scan.
+<p align="center"><strong>Open-source external attack-surface monitor for small businesses.</strong></p>
+
+<p align="center">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <img alt="Python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-blue">
+  <img alt="Tests" src="https://img.shields.io/badge/tests-27%20passing-brightgreen">
+  <a href="https://github.com/Shiwawaa/SurfaceWatch/issues"><img alt="Good first issues" src="https://img.shields.io/github/issues/Shiwawaa/SurfaceWatch/good%20first%20issue"></a>
+</p>
+
+Most small businesses, schools, and clinics have no budget for a professional security audit — and no idea what's publicly exposed on their own domain until it's too late. A forgotten subdomain, an expired certificate, an open database port, a leaked `.env` file: all invisible to the owner, all visible to anyone who looks.
+
+**SurfaceWatch** gives business owners and the developers who support them a free, self-hosted dashboard that finds those exposures first, explains each one in plain English, and tracks exactly what changed since the last check — no security background required to read the result.
 
 > **Legal & Ethical Notice:** SurfaceWatch is strictly a **defensive** tool. Only scan domains you directly own or have explicit written authorization to test. Scans are blocked until ownership is verified.
+
+---
+
+## See it in action
+
+<p align="center">
+  <img src="docs/screenshots/scanning.png" alt="SurfaceWatch running a passive scan" width="800">
+  <br><em>Running a passive, non-intrusive scan against a verified domain.</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/results.png" alt="SurfaceWatch showing scan results and a critical finding" width="800">
+  <br><em>Results come back with a 0–100 risk score and a plain-English finding — here, an exposed Telnet port.</em>
+</p>
 
 ---
 
@@ -14,7 +41,7 @@ Small businesses rarely know every subdomain, SSL certificate, email authenticat
 - **Passive Subdomain Discovery**: Queries Certificate Transparency (`crt.sh` JSON API) and resolves public DNS records without brute-forcing.
 - **DNS & Email Security**: Audits SPF records, common DKIM selectors, DMARC policy strength (`p=none` vs `quarantine`/`reject`), and dangling CNAME takeover risks.
 - **TLS Certificate Inspection**: Flags expired certificates, 30/14/7-day expiry warnings, hostname mismatches, self-signed chains, and legacy TLS 1.0/1.1 support.
-- **Safe Connect-Only Port Checks**: Checks a small fixed list of common ports (`21, 22, 23, 25, 80, 443, 445, 3306, 3389, 5432, 6379, 8080, 27017`) on discovered public hosts only—no payloads, no exploitation.
+- **Safe Connect-Only Port Checks**: Checks a small fixed list of common ports (`21, 22, 23, 25, 80, 443, 445, 3306, 3389, 5432, 6379, 8080, 27017`) on discovered public hosts only — no payloads, no exploitation.
 - **HTTP Exposure Checks**: Detects missing security headers (`HSTS`, `CSP`, `X-Frame-Options`, `X-Content-Type-Options`) and single-`GET` sensitive paths (`/admin`, `/.git/HEAD`, `/.env`, `/phpinfo.php`).
 - **Plain-Language Findings & 0–100 Risk Score**: Every finding includes severity, plain-English business impact, concrete evidence, and remediation steps.
 - **Change Detection ("What Changed")**: Compares each scan to the previous scan to show **New**, **Resolved**, and **Unchanged** findings.
@@ -43,22 +70,12 @@ flowchart LR
 ## Quick Start (3 Commands)
 
 ```bash
-git clone https://github.com/your-org/surfacewatch.git && cd surfacewatch
+git clone https://github.com/Shiwawaa/SurfaceWatch.git && cd SurfaceWatch
 cp .env.example .env
 docker compose up --build
 ```
 
 Then open **http://localhost:8000** in your browser.
-
----
-
-## Screenshots
-
-> *Placeholder: Add screenshots of your live instance below after capturing them.*
->
-> - `docs/screenshots/dashboard-overview.png` — Domain list, 0–100 Risk Score, and Findings table
-> - `docs/screenshots/ownership-gate.png` — DNS TXT & Attestation verification gate
-> - `docs/screenshots/what-changed.png` — Scan diff timeline showing New vs. Resolved issues
 
 ---
 
@@ -77,6 +94,8 @@ All scanners implement the common `Scanner.run(target) -> list[Finding]` interfa
 ---
 
 ## Pentest Mode (Scoped VAPT Engagements)
+
+> **This section is for security practitioners running authorized engagements.** Most users only need the passive monitor above — nothing here is required to use SurfaceWatch day to day.
 
 Pentest Mode is a separate, API-only workflow for authorized, time-boxed VAPT engagements. It adds scoped active tooling (Nmap and nuclei) and manual analyst findings on top of the existing passive monitor. Domain scanning, reports, notifications, and scheduling are unchanged.
 
@@ -198,6 +217,19 @@ Configure via `.env` (see `.env.example`):
 - Webhook/Slack alert integration alongside Telegram and SMTP
 - Historical risk-score trend chart on the dashboard
 - Custom DKIM selector configuration per domain
+- Dashboard UI for Pentest Mode (engagements, active scans, manual findings)
+
+---
+
+## Contributing
+
+Issues labeled [`good first issue`](https://github.com/Shiwawaa/SurfaceWatch/labels/good%20first%20issue) are a good place to start. Bug reports, new scanner plugins, and documentation fixes are all welcome — open an issue before a large PR so the approach can be agreed on first.
+
+---
+
+## License
+
+SurfaceWatch is released under the [MIT License](LICENSE).
 
 ---
 
