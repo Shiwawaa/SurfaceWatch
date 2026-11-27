@@ -7,7 +7,7 @@
 <p align="center"><strong>Open-source external attack-surface monitor for small businesses.</strong></p>
 
 <p align="center">
-  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <a href="LICENSE"><img alt="License: PolyForm Noncommercial 1.0.0" src="https://img.shields.io/badge/license-PolyForm%20Noncommercial-blue.svg"></a>
   <img alt="Python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-blue">
   <img alt="Tests" src="https://img.shields.io/badge/tests-27%20passing-brightgreen">
   <a href="https://github.com/Shiwawaa/SurfaceWatch/issues"><img alt="Good first issues" src="https://img.shields.io/github/issues/Shiwawaa/SurfaceWatch/good%20first%20issue"></a>
@@ -229,7 +229,7 @@ Issues labeled [`good first issue`](https://github.com/Shiwawaa/SurfaceWatch/lab
 
 ## License
 
-SurfaceWatch is released under the [MIT License](LICENSE).
+SurfaceWatch is released under the [PolyForm Noncommercial License 1.0.0](LICENSE). It is free to use for personal, educational, research, and other noncommercial purposes; commercial use is not permitted.
 
 ---
 
